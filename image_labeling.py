@@ -1,18 +1,67 @@
 import cv2
-import matplotli.pyplot as plt
+import os
+import matplotlib.pyplot as plt
+from image_settings import image_processing, crop_image_like_circle
+from image_utils import imager_fname
 
-from image_settings import setting_brightness
-from utils import imager_fname
 
+def draw_labels(ax, 
+                filename, 
+                fontsize = 20, 
+                color = "black", 
+                site = "CA", 
+                emisson = "O6"):
+    
+    d = imager_fname(filename)
+    
+    ax.text(30, 510, d.time, 
+            transform = ax.transData, 
+            color = color, fontsize = fontsize)
+    
+    ax.text(390, 510, d.date, 
+            transform = ax.transData, 
+            color = color, fontsize = fontsize)
+    
+    ax.text(30, 20, site, 
+            transform = ax.transData, 
+            color = color, fontsize = fontsize)
+    
+    ax.text(470, 20, emisson, 
+            transform = ax.transData, 
+            color = color, fontsize = fontsize)
+    
+    ax.text(260, 45, "N", 
+            transform = ax.transData, 
+            color = "white", fontsize = fontsize + 10)
+    
+    ax.text(260, 500, "S", 
+            transform = ax.transData, 
+            color = "white", fontsize = fontsize + 10)
+    
+    ax.text(45, 270, "O", 
+            transform = ax.transData, 
+            color = "white", fontsize = fontsize + 10)
+    
+    ax.text(480, 270, "E", 
+            transform = ax.transData, 
+            color = "white", fontsize = fontsize + 10)
+    
+    ax.spines.right.set_visible(False)
+    ax.spines.top.set_visible(False)
+    ax.spines.left.set_visible(False)
+    ax.spines.bottom.set_visible(False)
 
-
-def image_visualization(infile, filename, path_to_save = "",
-                      save = False):
+    ax.set(xticks = [], yticks = [])
     
     
-    image_read = cv2.imread(infile + filename)
-    imagem = setting_brightness(image_read, 
-                                alpha = 6, beta = 2)
+    
+def image_visualization(infile, filename, 
+                        path_to_save = "",
+                        save = False):
+    
+    
+    img = crop_image_like_circle(image_processing(infile, 
+                                                  filename))
    
     
     if save:
@@ -20,8 +69,14 @@ def image_visualization(infile, filename, path_to_save = "",
     
     fig, ax = plt.subplots(figsize = (10, 10))
     
-    ax.imshow(imagem)
+    ax.imshow(img)
     
+    draw_labels(ax, 
+                filename, 
+                fontsize = 20, 
+                color = "black", 
+                site = "CA", 
+                emisson = "O6")
     if save:
         print("saving...", filename)
         fig.savefig(path_to_save + filename, 
@@ -32,22 +87,14 @@ def image_visualization(infile, filename, path_to_save = "",
         plt.show()
         
         
-def draw_labels(ax, filename):
-    
-    date_time = imager_fname(filename)
-    
-    ax.text(5, 500, f"{date_time.time()} UT", 
-            transform = ax.transData, 
-            color = "white", fontsize = 20)
-    
-    
-    ax.text(400, 500, f"{date_time.date()}", 
-            transform = ax.transData, 
-            color = "white", fontsize = 20)
+
+infile = "database/2014/024/"
+_, _, files = next(os.walk(infile))
+filename = files[100]
+
+
     
     
-    ax.text(10, 50, f"CA", 
-            transform = ax.transData, 
-            color = "white", fontsize = 40)
-    
-    ax.set(xticks = [], yticks = [])
+image_visualization(infile, filename, 
+                        path_to_save = "",
+                        save = False)
