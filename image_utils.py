@@ -14,6 +14,8 @@ class imager_fname(object):
 
         date = infos[2]
         time = infos[-1]
+        self.emission = infos[0]
+        self.site = infos[1]
         self.datetime = datetime.datetime.strptime(date + " " + time, '%Y%m%d %H%M%S')
   
     @property
@@ -23,7 +25,7 @@ class imager_fname(object):
     @property
     def date(self):
         return self.datetime.strftime("%d/%m/%Y")
-
+    
 def doy_str_format(date: int) -> str:
     """Convert integer to string. Ex: 1 to 001"""
     
