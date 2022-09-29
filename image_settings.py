@@ -99,7 +99,7 @@ def crop_image_like_circle(img):
     npImage = np.array(img)
     h, w = img.size
 
-    alpha = Image.new('L', img.size,0)
+    alpha = Image.new('L', img.size, 0)
     draw = ImageDraw.Draw(alpha)
     draw.pieslice([30, 20, h, w], 0, 360, fill = 255)
 
@@ -110,61 +110,15 @@ def crop_image_like_circle(img):
     
     return Image.fromarray(npImage)
 
+def crop_like_an_rectangle(img, x = 30, y = 20):
+    img = np.array(img)                                              
+    h = img.shape[0]
+    w = img.shape[1]
+    return img[y:y+h, x:x+w]
 
-def image_with_labels(infile, filename, path_to_save = "",
-                      save = False):
+
+
+
         
-    imagem = setting_brightness(cv2.imread(infile + filename), 
-                                alpha = 6, beta = 2)
-   
-    
-    if save:
-        plt.ioff()
-    
-    fig, ax = plt.subplots(figsize = (10, 10))
-    
-    ax.imshow(imagem)
-    
-    date_time = filename_to_datetime(filename)
-    
-    ax.text(5, 500, f"{date_time.time()} UT", 
-            transform = ax.transData, 
-            color = "white", fontsize = 20)
-    
-    
-    ax.text(400, 500, f"{date_time.date()}", 
-            transform = ax.transData, 
-            color = "white", fontsize = 20)
-    
-    
-    ax.text(10, 50, f"CA", 
-            transform = ax.transData, 
-            color = "white", fontsize = 40)
-    
-    ax.set(xticks = [], yticks = [])
-    
-    if save:
-        print("saving...", filename)
-        fig.savefig(path_to_save + filename, 
-                    dpi = 100, 
-                    bbox_inches="tight", 
-                    transparent=True)
-    else:
-        plt.show()
-        
-        
-infile = "database/2014/001/"
-_, _, files = next(os.walk(infile))
-
-
-path_to_save = "database/2014/001_test/"
-
-#filename = files[45]
-for filename in files:
-    
-    image_with_labels(infile, 
-                      filename, 
-                      path_to_save = path_to_save, 
-                      save = True)
-
+  
 
