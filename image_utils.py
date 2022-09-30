@@ -26,17 +26,8 @@ class imager_fname(object):
     def date(self):
         return self.datetime.strftime("%d/%m/%Y")
     
-def doy_str_format(date: int) -> str:
-    """Convert integer to string. Ex: 1 to 001"""
-    
-    if isinstance(date, datetime.datetime):
-        doy = date.timetuple().tm_yday
-    else:
-        doy = date
-    
-    if doy < 10:
-        str_doy = f"0{doy}"
-    else:
-        str_doy = f"{doy}"
-        
-    return  str_doy
+def filename_from_date(t:datetime.datetime, 
+                       layer:str = "O6", 
+                       site:str = "CA") -> str:
+    """Convert All_Sky filename from site, layer and datetime"""
+    return f'{layer}_{site}_{t.strftime("%Y%m%d_%H%M%S")}'
