@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import datetime
 import os
 from PIL import Image, ImageDraw, ImageFont
-
+from calibrate import find_calibration
+from image_utils import imager_fname
 
 def bytscl(array, max = None, min = None, nan = 0, top=255):
     # see http://star.pst.qub.ac.uk/idl/BYTSCL.html
@@ -67,29 +68,53 @@ def get_level(im2, sref_min, sref_max):
 
     return slevel
 
-def setting_brightness(img, alpha = 6.0, beta = 2.0):
-    
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    image = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
-    
-    
-    return cv2.flip(image, 1)
 
 
-def image_processing(infile, filename):
-    
-    read = cv2.imread(infile + filename, cv2.COLOR_BGR2RGB)
-    imagem = setting_brightness(read, alpha = 6, beta = 2.0)
-    
-    #imagem = cv2.imread(infile + filename, cv2.COLOR_BGR2RGB)
-    sref_min = 0.25 #preto
-    sref_max = 0.98 #branco
-    variavel = get_level(imagem, sref_min, sref_max)
 
-    return bytscl(imagem, variavel[1], variavel[0])
 
-        
+def rotate(image, time, 
+           center = None, 
+           scale = 1.0, 
+           flip = "ON"):
+    
+    dat = find_calibration(time)
+    angle = float(dat["Rotation"])
+    flip = dat["Horizontal Flip"]
+    
+    if flip == "ON":
+        image = cv2.flip(image, 1)
+    
+    (h, w) = image.shape[:2]
+
+    if center is None:
+        center = (w / 2, h / 2)
+
+    # Perform the rotation
+    M = cv2.getRotationMatrix2D(center, angle, scale)
+    rotated = cv2.warpAffine(image, M, (w, h))
+    
+    return Image.fromarray((rotated * 1).astype(np.uint8)).convert('RGB')
+
+def load_and_processing(filename, 
+                        alpha = 4.0, 
+                        beta = 1.1, 
+                        sref_min = 0.0099, 
+                        sref_max = 0.9):
+    
+    time = imager_fname(filename).datetime
+    
+    read = cv2.imread(filename)
+    img = cv2.cvtColor(read, cv2.IMREAD_GRAYSCALE)
+    
+    filt_img = cv2.convertScaleAbs(img, alpha = alpha, beta = beta)
+    
+    variavel = get_level(filt_img, sref_min, sref_max)
+    
+    img_rotated = rotate(bytscl(filt_img, variavel[1], variavel[0]), time)
+
+    return img_rotated
+
+
         
 def crop_image_like_circle(img):
     
