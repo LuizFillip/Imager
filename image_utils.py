@@ -33,5 +33,13 @@ def filename_from_date(t:datetime.datetime,
 def convert_tif_to_png(filename, path = ""):
     """Convert to PNG"""
     src = os.path.join(path, filename)
-    dest = os.path.join(path, filename.replace(".tif",'.png') )              
-    os.rename(src, dest)
+    dest = os.path.join(path, filename.replace(".tif",'.png') )           
+    try:
+        os.rename(src, dest)   
+    except RuntimeError:
+        print("All files was converted")
+    
+    
+#for filename in ["O6_CA_20151114_231918.tif", "O6_CA_20171119_003252.tif"]:
+ #   convert_tif_to_png(filename, path = "")
+    
