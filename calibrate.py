@@ -1,6 +1,8 @@
 import datetime
 import os
 import json 
+from image_utils import filename_from_date
+import pandas as pd
 
 def get_date_from_folder(folder: str) -> datetime.date:
     """split filename arguments and get calibration date"""
@@ -54,6 +56,19 @@ def run_for_all_files(infile:str)-> dict:
 
 
 def save_json(infile: str, name: str = "cariri.json") -> None:
+    """Save results"""
     with open(infile + "cariri.json", 'w') as f:
         json.dump(run_for_all_files(infile), f)
+        
+        
+def find_calibration(time: datetime.datetime, 
+                     infile:str = "calibracao/cariri.json") -> dict:
+    """Open json file for the last calibration for the time"""
+    dat = json.load(open(infile))
+
+    dates = pd.to_datetime(list(dat.keys()))
+    
+    for num in range(len(dates) - 1):
+        if (dates[num] > time) and (dates[num + 1] < time):
+            return dat[str(dates[num + 1].date())]
         
