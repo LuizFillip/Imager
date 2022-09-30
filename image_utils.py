@@ -1,5 +1,5 @@
 import datetime 
-
+import os
 
 class imager_fname(object):
     
@@ -7,11 +7,8 @@ class imager_fname(object):
     
     def __init__(self, filename):
         
-        if ".tif" in filename:
-            infos = filename.replace(".tif", "").split("_")
-        else:
-            infos = filename.replace(".png", "").split("_")
-
+  
+        infos = filename[:-4].split("_")
         date = infos[2]
         time = infos[-1]
         self.emission = infos[0]
@@ -31,3 +28,10 @@ def filename_from_date(t:datetime.datetime,
                        site:str = "CA") -> str:
     """Convert All_Sky filename from site, layer and datetime"""
     return f'{layer}_{site}_{t.strftime("%Y%m%d_%H%M%S")}'
+
+
+def convert_tif_to_png(filename, path = ""):
+    """Convert to PNG"""
+    src = os.path.join(path, filename)
+    dest = os.path.join(path, filename.replace(".tif",'.png') )              
+    os.rename(src, dest)
