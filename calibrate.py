@@ -63,7 +63,7 @@ def save_json(infile: str, name: str = "cariri.json") -> None:
         
 
 def find_calibration(time: datetime.datetime, 
-                     infile:str = "calibracao/cariri.json") -> dict:
+                     infile:str = "G:/My Drive/Python/data-analysis/imager/calibracao/cariri.json") -> dict:
     """Open json file for the last calibration for the time"""
     dat = json.load(open(infile))
 

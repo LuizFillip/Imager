@@ -144,6 +144,18 @@ def crop_like_an_rectangle(img, x = 30, y = 20):
 
 
 
-        
+def main():   
   
-
+    files = ["O6_CA_20140621_211848.png", 
+             "O6_CA_20151114_231918.png", 
+             "O6_CA_20171119_003252.png"]
+    
+    
+    fig, ax = plt.subplots(figsize = (15, 10), nrows = 1, ncols = 3)
+    
+    
+    for num, ax in enumerate(ax.flat):
+        filename = files[num]
+        
+        img = load_and_processing(filename)
+        ax.imshow(img)
