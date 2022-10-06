@@ -69,50 +69,47 @@ def get_level(im2, sref_min, sref_max):
     return slevel
 
 
+class processing(object):
+    
+    def __init__(self, fname):
+        
+        read = cv2.imread(fname)
+        self.time = imager_fname(fname).datetime
+        self.img = cv2.cvtColor(read, cv2.IMREAD_GRAYSCALE)
+        
+        
+    @staticmethod  
+    def constrast_adjust(img, alpha = 6, beta = 2):
+        return cv2.convertScaleAbs(img, alpha = alpha, beta = beta)
+    
+    @staticmethod
+    def get_level(filt_img, sref_min = 0.099, sref_max = 0.9):
+        variavel = get_level(filt_img, sref_min, sref_max)
+        return bytscl(filt_img, variavel[1], variavel[0])
+    
+    @staticmethod
+    def rotated(image, time):
+        
+        dat = find_calibration(time)
+        angle = float(dat["Rotation"])
 
+        if dat["Horizontal Flip"] == "ON":
+            image = cv2.flip(image, 1)
+        elif dat["Vertical   Flip"] == "ON":
+            image = cv2.flip(image, 1)
+            
+        (h, w) = image.shape[:2]
+        
+        M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
+        rotated = cv2.warpAffine(image, M, (w, h))
+        return Image.fromarray((rotated * 1).astype(np.uint8)).convert('RGB')
+    
+    def all_processing(self):
 
-
-def rotate(image, time, 
-           center = None, 
-           scale = 1.0, 
-           flip = "ON"):
-    
-    dat = find_calibration(time)
-    angle = float(dat["Rotation"])
-    flip = dat["Horizontal Flip"]
-    
-    if flip == "ON":
-        image = cv2.flip(image, 1)
-    
-    (h, w) = image.shape[:2]
-
-    if center is None:
-        center = (w / 2, h / 2)
-
-    # Perform the rotation
-    M = cv2.getRotationMatrix2D(center, angle, scale)
-    rotated = cv2.warpAffine(image, M, (w, h))
-    
-    return Image.fromarray((rotated * 1).astype(np.uint8)).convert('RGB')
-
-def load_and_processing(filename, 
-                        alpha = 4.0, 
-                        beta = 1.1, 
-                        sref_min = 0.0099, 
-                        sref_max = 0.9):
-    
-    time = imager_fname(filename).datetime
-    
-    read = cv2.imread(filename)
-    img = cv2.cvtColor(read, cv2.IMREAD_GRAYSCALE)
-    
-    filt_img = cv2.convertScaleAbs(img, alpha = alpha, beta = beta)
-    
-    variavel = get_level(filt_img, sref_min, sref_max)
-    
-    img_rotated = rotate(bytscl(filt_img, variavel[1], variavel[0]), time)
-
-    return img_rotated
+        image = self.constrast_adjust(self.img)
+        img_level = self.get_level(image)
+        img_rotated = self.rotated(img_level, self.time)
+        return img_rotated
 
 
         
@@ -142,20 +139,10 @@ def crop_like_an_rectangle(img, x = 30, y = 20):
     return img[y:y+h, x:x+w]
 
 
+def get_files(infile, extension = ""): 
+    _, _, files = next(os.walk(infile))
+    
+    return [f for f in files if f.endswith(extension)]
 
 
-def main():   
-  
-    files = ["O6_CA_20140621_211848.png", 
-             "O6_CA_20151114_231918.png", 
-             "O6_CA_20171119_003252.png"]
-    
-    
-    fig, ax = plt.subplots(figsize = (15, 10), nrows = 1, ncols = 3)
-    
-    
-    for num, ax in enumerate(ax.flat):
-        filename = files[num]
         
-        img = load_and_processing(filename)
-        ax.imshow(img)
