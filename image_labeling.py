@@ -6,7 +6,6 @@ from image_utils import imager_fname
 import numpy as np
 import datetime
 import os
-from PIL import Image, ImageDraw, ImageFont
 
 def draw_labels(ax, 
                 filename, 
@@ -84,14 +83,14 @@ def image_visualization(infile, filename,
     else:
         plt.show()
         
-        
-infile = "C:\\observation\\172\\imager\\"
-
-
-files = get_files(infile)
-
-filename = files[0]
-
-image_visualization(infile, filename, 
-                        path_to_save = "",
-                        save = False)
+def main():        
+    infile = "C:\\observation\\172\\imager\\"
+    
+    
+    files = get_files(infile)
+ 
+    path_to_save = "database/2014/172/"
+    for filename in files:
+        image_visualization(infile, filename, 
+                            path_to_save = path_to_save,
+                            save = True)
