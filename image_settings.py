@@ -79,11 +79,13 @@ class processing(object):
         
         
     @staticmethod  
-    def constrast_adjust(img, alpha = 6, beta = 2):
-        return cv2.convertScaleAbs(img, alpha = alpha, beta = beta)
+    def constrast_adjust(img, alpha = 4, beta = 1.1):
+        return cv2.convertScaleAbs(img, 
+                                   alpha = alpha, 
+                                   beta = beta)
     
     @staticmethod
-    def get_level(filt_img, sref_min = 0.099, sref_max = 0.9):
+    def get_level(filt_img, sref_min = 0.0099, sref_max = 0.9):
         variavel = get_level(filt_img, sref_min, sref_max)
         return bytscl(filt_img, variavel[1], variavel[0])
     
@@ -103,10 +105,11 @@ class processing(object):
         M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
         rotated = cv2.warpAffine(image, M, (w, h))
         return Image.fromarray((rotated * 1).astype(np.uint8)).convert('RGB')
-    
+    @property
     def all_processing(self):
 
         image = self.constrast_adjust(self.img)
+        #image = self.img
         img_level = self.get_level(image)
         img_rotated = self.rotated(img_level, self.time)
         return img_rotated
@@ -145,4 +148,13 @@ def get_files(infile, extension = ""):
     return [f for f in files if f.endswith(extension)]
 
 
-        
+infile = "C:\\observation\\172\\imager\\"
+
+
+files = get_files(infile)
+
+filename = files[0]
+
+img = processing(infile + filename).all_processing
+
+plt.imshow(img)
