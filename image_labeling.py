@@ -19,7 +19,7 @@ def draw_labels(ax,
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(360, 500, d.date, 
+    ax.text(380, 500, d.date, 
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
@@ -31,10 +31,10 @@ def draw_labels(ax,
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(230, 45, "N", 
+    ax.text(255, 30, "N", 
             transform = ax.transData, 
             color = color, fontsize = fontsize + 10)
-    ax.text(480, 270, "E", 
+    ax.text(480, 255, "E", 
             transform = ax.transData, 
             color = color, fontsize = fontsize + 10)
     
@@ -52,33 +52,35 @@ def remove_ticks(ax):
     
 def image_visualization(infile, filename, 
                         path_to_save = "",
-                        save = False):
+                        save = False, 
+                        width = 9, 
+                        height = 9):
     
-    img = load_and_processing(infile, filename)
+    """Read, processing and save it"""
     
-
-   
+    img = processing(infile + filename).all_processing
+    
     if save:
         plt.ioff()
     
-    fig, ax = plt.subplots(figsize = (10, 10))
+    fig, ax = plt.subplots(figsize = (width, height))
     
     ax.imshow(img)
     
-    ax.spines.right.set_visible(False)
-    ax.spines.top.set_visible(False)
-    ax.spines.left.set_visible(False)
-    ax.spines.bottom.set_visible(False)
+    draw_labels(ax, 
+                filename, 
+                fontsize = 20, 
+                color = "white")
+    
+    remove_ticks(ax)
 
-    ax.set(xticks = [], yticks = [])
-    
-    
     if save:
         print("saving...", filename)
         fig.savefig(path_to_save + filename, 
-                    dpi = 100,pad_inches = 0, 
-                    bbox_inches="tight", 
-                    transparent=True)
+                    dpi = 100, 
+                    pad_inches = 0, 
+                    bbox_inches = "tight", 
+                    transparent = True)
     else:
         plt.show()
         
@@ -90,6 +92,6 @@ files = get_files(infile)
 
 filename = files[0]
 
-img = processing(infile + filename).all_processing
-
-plt.imshow(img)
+image_visualization(infile, filename, 
+                        path_to_save = "",
+                        save = False)
