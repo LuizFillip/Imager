@@ -1,7 +1,7 @@
 import cv2
 import os
 import matplotlib.pyplot as plt
-from image_settings import load_and_processing
+from image_settings import processing, get_files
 from image_utils import imager_fname
 import numpy as np
 import datetime
@@ -11,43 +11,35 @@ from PIL import Image, ImageDraw, ImageFont
 def draw_labels(ax, 
                 filename, 
                 fontsize = 20, 
-                color = "black", 
-                site = "CA", 
-                emisson = "O6"):
+                color = "black"):
     
     d = imager_fname(filename)
     
-    ax.text(30, 510, d.time, 
+    ax.text(12, 500, d.time, 
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(390, 510, d.date, 
+    ax.text(360, 500, d.date, 
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(30, 20, site, 
+    ax.text(12, 30, d.site, 
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(470, 20, emisson, 
+    ax.text(470, 30, d.emission, 
             transform = ax.transData, 
             color = color, fontsize = fontsize)
     
-    ax.text(260, 45, "N", 
+    ax.text(230, 45, "N", 
             transform = ax.transData, 
-            color = "white", fontsize = fontsize + 10)
-    
-    ax.text(260, 500, "S", 
-            transform = ax.transData, 
-            color = "white", fontsize = fontsize + 10)
-    
-    ax.text(45, 270, "O", 
-            transform = ax.transData, 
-            color = "white", fontsize = fontsize + 10)
-    
+            color = color, fontsize = fontsize + 10)
     ax.text(480, 270, "E", 
             transform = ax.transData, 
-            color = "white", fontsize = fontsize + 10)
+            color = color, fontsize = fontsize + 10)
+    
+   
+def remove_ticks(ax):
     
     ax.spines.right.set_visible(False)
     ax.spines.top.set_visible(False)
@@ -91,3 +83,13 @@ def image_visualization(infile, filename,
         plt.show()
         
         
+infile = "C:\\observation\\172\\imager\\"
+
+
+files = get_files(infile)
+
+filename = files[0]
+
+img = processing(infile + filename).all_processing
+
+plt.imshow(img)
