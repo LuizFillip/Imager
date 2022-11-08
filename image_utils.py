@@ -38,8 +38,3 @@ def convert_tif_to_png(filename, path = ""):
         os.rename(src, dest)   
     except RuntimeError:
         print("All files was converted")
-    
-    
-#for filename in ["O6_CA_20151114_231918.tif", "O6_CA_20171119_003252.tif"]:
- #   convert_tif_to_png(filename, path = "")
-    
