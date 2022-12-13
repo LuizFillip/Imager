@@ -1,13 +1,10 @@
-from processing import image_processing
 import matplotlib.pyplot as plt
 import numpy as np
 from calibrate import find_calibration
 from image_utils import imager_fname
 from constants import constants as c
 from base import getlevel, bytscl
-import PIL.Image as PILImage
-
-
+from skimage import io
 
 class get_attributes:
 
@@ -17,7 +14,7 @@ class get_attributes:
         
         
         self.lat_obs = np.radians(float(dat["Latitude"]))
-        self.alt_obs = float(dat["Altitude"]) / 1000
+        self.alt_obs = float(dat["Altitude"]) / 1000 # in km 
         self.xm = float(dat["Zenith x"])
         self.ym = float(dat["Zenith y"])
         
@@ -40,14 +37,11 @@ class get_attributes:
         num = pow(eq * ep, 2)
         den = (pow(eq * np.sin(self.lat_obs), 2) + 
                pow(ep * np.cos(self.lat_obs), 2.0))
+        
         return np.sqrt(num / den)
+
     
-    
-def load(fname):
-    
-    img = image_processing(fname).all_processing()
-    
-    return np.array(img)[:, :, 0]
+
 
 def lens_function(z, attrs):    
     """
@@ -105,7 +99,7 @@ def make_mapping(original, fname):
     attrs = get_attributes(fname)
     
     rot = attrs.rotation
-    alt_ag = c.emission_band()
+    alt_ag = c.emission_band(imager_fname(fname).emission)
             
     size_x, size_y = original.shape[:]
     half_x = (size_x - 1) / 2  
@@ -155,15 +149,33 @@ def linearization(original,
     return new_img
 
 
-#def main():
-fname = "database/examples/O6_CA_20181112_000244.tif" 
 
-original = load(fname)
 
-img_map = make_mapping(original, fname)
-
-img = linearization(original, img_map)
-
-plt.imshow(PILImage.fromarray(img))
+def main():
+    fname = "database/examples/OH_CA_20181112_002024.tif" 
     
-#main()
+    #original = load(fname)
+    original = io.imread(fname, as_gray = True)
+    
+    linearized = linearization(original, 
+                               make_mapping(original, fname))
+    
+    
+    
+    fig, ax = plt.subplots(figsize = (10, 10), 
+                           ncols = 2)
+    
+    names = ["original", "linearized"]
+    
+    for i, image in enumerate([original, 
+                               linearized]):
+        #[contraste, brilho] 
+        slevels = getlevel(image, [0.2, 0.95])
+        
+        
+        cs = ax[i].imshow(bytscl(image, 
+                                 slevels[1], 
+                                 slevels[0]),
+                                 cmap = "gray")
+    
+        ax[i].set(title = names[i])
