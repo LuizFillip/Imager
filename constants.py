@@ -3,8 +3,8 @@
 class constants(object):
     
     # radius_equator, radius_polo (in km)
-    equator_radius, polo_radius = 6378.14, 6356.755
-    
+    equator_radius = 6378.14
+    polo_radius = 6356.755
     
     @staticmethod
     def projection_area(proj_area: str = 2) -> int:
@@ -20,15 +20,16 @@ class constants(object):
         return areap_values[proj_area]
 
     @staticmethod
-    def emission_band(band:str = "OH_IR-87") -> int:
+    def emission_band(band:str = "OH") -> int:
         
         """
         Altitude of emission layer (in km) 
+        OH = IR-87
         """
-        altitude_values = {"OI_557.7": 96, 
-                           "OI_630.0": 250, 
-                           "OH_IR-87": 87, 
-                           "O2_(0-1)": 89, 
+        altitude_values = {"O5": 96, 
+                           "O6": 250, 
+                           "OH": 87, 
+                           "O2": 89, 
                            "NaD": 94}
         
         return altitude_values[band]
