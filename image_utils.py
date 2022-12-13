@@ -1,5 +1,8 @@
 import datetime 
 import os
+import sys
+os.path.dirname(sys.executable)
+
 
 class imager_fname(object):
     
@@ -23,6 +26,14 @@ class imager_fname(object):
     def date(self):
         return self.datetime.strftime("%d/%m/%Y")
     
+    
+def get_files(infile, extension = ""): 
+    _, _, files = next(os.walk(infile))
+    
+    return [f for f in files if f.endswith(extension)]
+
+
+    
 def filename_from_date(t:datetime.datetime, 
                        layer:str = "O6", 
                        site:str = "CA") -> str:
@@ -32,9 +43,19 @@ def filename_from_date(t:datetime.datetime,
 
 def convert_tif_to_png(filename, path = ""):
     """Convert to PNG"""
-    src = os.path.join(path, filename)
-    dest = os.path.join(path, filename.replace(".tif",'.png') )           
+    if path == "":
+        src = os.path.join(path, filename)
+        dest = os.path.join(path, filename.replace(".tif",'.png') )     
+        
+    else:
+        src = filename
+        dest = filename.replace(".tif",'.png')
     try:
         os.rename(src, dest)   
     except RuntimeError:
         print("All files was converted")
+        
+        
+infile = "database/examples/OH_0179_20070707194753.tif"
+
+convert_tif_to_png(infile)
