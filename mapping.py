@@ -4,7 +4,8 @@ import numpy as np
 from calibrate import find_calibration
 from image_utils import imager_fname
 from constants import constants as c
-
+from base import getlevel, bytscl
+import PIL.Image as PILImage
 
 
 
@@ -29,8 +30,10 @@ class get_attributes:
         self.rotation = np.radians(float(dat["Rotation"]))
         
     @property
-    def erad(self):
-        
+    def earth_radius(self):
+        """
+        Compute earth radius from a latitude
+        """
         eq = c.equator_radius
         ep = c.polo_radius
         
@@ -38,95 +41,97 @@ class get_attributes:
         den = (pow(eq * np.sin(self.lat_obs), 2) + 
                pow(ep * np.cos(self.lat_obs), 2.0))
         return np.sqrt(num / den)
-
-def lens_function(dat):
     
-    """
-    Lens function with fitting coefficients
-    """
-
-    fitt_coeficients = [float(dat[item]) for item in 
-                        ['A0', 'A1', 'A2', 'A3', 'A4']]
-    fitt_coeficients = np.array(fitt_coeficients, np.float32)
-
-    return np.poly1d(fitt_coeficients)
-
+    
 def load(fname):
     
     img = image_processing(fname).all_processing()
     
     return np.array(img)[:, :, 0]
 
+def lens_function(z, attrs):    
+    """
+    fourth order polynomial from fitting coefficients
+    from lens function
+    """
+    A0 = attrs.a0
+    A1 = attrs.a1
+    A2 = attrs.a2  
+    A3 = attrs.a3 
+    A4 = attrs.a4
+
+    return A0 + A1*z + A2*pow(z, 2) + A3*pow(z, 3) + A4*pow(z, 4)
+
+
 def projection_factor(size_x = 512, 
                       proj_area = 512):
+    """
+    Relation between area projeted (in km) and 
+    image size (in pixels)
+    """
     return proj_area / size_x
 
 
+def projection_area(i, j, half_x, half_y, attrs, alt_ag):
+
+    Re = attrs.earth_radius
+    alpha = projection_factor()
+    arg = pow(half_x - i, 2) + pow(j - half_y, 2)
+
+    return  (np.sqrt(arg) * alpha) / (Re + alt_ag)
 
 
+def elevation_angle(a, attrs, alt_ag):
+    """Elevation angle which an observer see the layer structure"""
+    Re = attrs.earth_radius
+    H = attrs.alt_obs
+    
+    return np.arctan2((Re + alt_ag) * np.sin(a), 
+                      (Re + alt_ag) * np.cos(a) - (Re + H))
 
-def make_mapping(original):
+
+def azimuth_angle(i, j, half_x, half_y):
+    """Anzimuth angle for each point (i, j) of image"""
+    
+    azimuth = np.arctan2(half_x - i, j - half_y) #verificar com Cristiano
+    if azimuth < 0:
+        azimuth += 2 * np.pi 
+    return azimuth
+
+
+def make_mapping(original, fname):
     
     
     attrs = get_attributes(fname)
     
-    alpha = projection_factor()
-
+    rot = attrs.rotation
     alt_ag = c.emission_band()
             
     size_x, size_y = original.shape[:]
-    half_x, half_y = (size_x - 1) / 2.0, (size_y - 1) / 2.0
+    half_x = (size_x - 1) / 2  
+    half_y = (size_y - 1) / 2
     
-    
-    xx = np.zeros((size_x, size_y))
-    yy = np.zeros((size_x, size_y))
     az = np.zeros((size_x, size_y))
-    rr = np.zeros((size_x, size_y))
     a = np.zeros((size_x, size_y))
     ze = np.zeros((size_x, size_y))
-    rrr = np.zeros((size_x, size_y))
+    lf = np.zeros((size_x, size_y))
     
-    imgmap = np.zeros((2, size_x, size_y), 
-                      dtype=np.int16)
+    imgmap = np.zeros((2, size_x, size_y), dtype=np.int16)
     
     
     for i in range(size_x):
         for j in range(size_y):
             
-            if (i == half_x) and (j == half_y):
-                xx[i, j] = attrs.xm
-                xx[i, j] = attrs.ym
-                
-            az[i, j] = np.arctan2(half_x - i, half_y - j)
+            az[i, j] = azimuth_angle(i, j, half_x, half_y)
             
-            if az[i,j] < 0:
-                az[i,j] = 2*np.pi + az[i,j]
-                
-                
-            rr[i, j]= np.sqrt(pow(half_x - i, 2) + 
-                              pow(half_y - j, 2))
+            a[i, j] = projection_area(i, j, half_x, half_y, attrs, alt_ag)
             
-            a[i,j] =  rr[i,j] * alpha / ( attrs.erad + alt_ag)
-            ze[i,j] = np.arctan2((attrs.erad + alt_ag) * np.sin(a[i, j]), 
-                                 (attrs.erad + alt_ag) * np.cos(a[i, j]) - 
-                                 (attrs.erad + attrs.alt_obs))
+            ze[i, j] = elevation_angle(a[i, j], attrs, alt_ag)
             
-            rrr[i,j] = (attrs.a0 + 
-                        attrs.a1*ze[i,j] + 
-                        attrs.a2*ze[i,j]**2 + 
-                        attrs.a3*ze[i,j]**3 + 
-                        attrs.a4*ze[i,j]**4)
-            
-            xx[i,j] = attrs.xm - rrr[i,j] * np.sin(az[i,j] - attrs.rotation)
-            yy[i,j] = attrs.ym + rrr[i,j] * np.cos(az[i,j] - attrs.rotation)
-            
-            if ((xx[i,j] >= 0) and 
-                (yy[i,j] >= 0) and 
-                (xx[i,j] <= size_x - 1) and 
-                (yy[i,j] <= size_x - 1)):
-            
-              imgmap[0,i,j] = xx[i,j]
-              imgmap[1,i,j] = yy[i,j]
+            lf[i, j] = lens_function(ze[i, j], attrs)
+    
+            imgmap[0, i, j] = attrs.xm - lf[i, j] * np.sin(az[i, j] - rot)
+            imgmap[1, i ,j] = attrs.ym + lf[i, j] * np.cos(az[i, j] - rot)
 
     return imgmap
 
@@ -150,11 +155,15 @@ def linearization(original,
     return new_img
 
 
+#def main():
 fname = "database/examples/O6_CA_20181112_000244.tif" 
 
 original = load(fname)
 
-imgmap = make_napping(original)
-img = linearization(original, 
-                    imgmap)
-plt.imshow(img)
+img_map = make_mapping(original, fname)
+
+img = linearization(original, img_map)
+
+plt.imshow(PILImage.fromarray(img))
+    
+#main()
