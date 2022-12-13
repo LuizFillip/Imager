@@ -1,8 +1,12 @@
 import datetime
 import os
 import json 
-from image_utils import filename_from_date
 import pandas as pd
+
+import sys
+os.path.dirname(sys.executable)
+from pathlib import Path
+
 
 def get_date_from_folder(folder: str) -> datetime.date:
     """split filename arguments and get calibration date"""
@@ -39,7 +43,8 @@ def calibration_infos_by_date(infile: str, folder: str) -> dict:
     """Create an dictonary with date of calibration"""
     date = get_date_from_folder(folder)
     
-    return {str(date): convert_infos_into_dict(infile, folder)}
+    return {str(date): convert_infos_into_dict(infile, 
+                                               folder)}
 
 def run_for_all_files(infile: str)-> dict:
     """Get path with all times calibration and append to one single dictionary"""
@@ -49,7 +54,8 @@ def run_for_all_files(infile: str)-> dict:
 
     for folder in folders:
 
-        out_dict.update(calibration_infos_by_date(infile, folder))
+        out_dict.update(calibration_infos_by_date(infile, 
+                                                  folder))
 
     return out_dict
 
@@ -63,15 +69,19 @@ def save_json(infile: str, name: str = "cariri.json") -> None:
         
 
 def find_calibration(time: datetime.datetime, 
-                     infile:str = "G:/My Drive/Python/data-analysis/imager/calibracao/cariri.json") -> dict:
+                     filename:str = "CA.json") -> dict:
     """Open json file for the last calibration for the time"""
-    dat = json.load(open(infile))
+    
+    infile = os.path.join(str(Path.cwd()), "calibracao")
+    dat = json.load(open(os.path.join(infile, filename)))
 
     dates = pd.to_datetime(list(dat.keys()))
     
     for num in range(len(dates) - 1):
+        
         if (dates[num] > time) and (dates[num + 1] < time):
             return dat[str(dates[num + 1].date())]
+        
         elif (time > max(dates)):
             return dat[str(max(dates).date())]
         
