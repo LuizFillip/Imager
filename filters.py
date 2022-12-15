@@ -34,8 +34,8 @@ def vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0):
     
     height = c.emission_band()
     
-    for i in range(0, xsize - 1):
-        for j in range(0, ysize - 1):
+    for i in range(0, xsize):
+        for j in range(0, ysize):
             
             dx = np.sqrt((i - xm)**2 + (j - ym)**2)
           
@@ -48,27 +48,40 @@ def vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0):
             ang[i, j] = angulo
             
             
-            vr[i, j] = (1 - (Re / (Re + height)**2)*(np.sin(np.radians(angulo)))**2)**(-0.5)
+            vr[i, j] = pow(1 - (Re / (Re + height)**2) *
+                        (np.sin(np.radians(angulo)))**2, -0.5)
            
-            Ftheta = (np.cos(np.radians(angulo)) + (0.15 * ((93.885 - angulo)**(-1.253))))**(-1)
+            Ftheta =  pow(np.cos(np.radians(angulo)) + 
+                         (0.15 * (93.885 - angulo)**(-1.253)), -1)
            
             ae[i, j] = 10**(-0.4 * a * Ftheta)
             
-    id_ = np.where(ang > 90)
+            #if count != 0 and id_[0] != -1:
+            if ang[i, j] > 90:
+                
+                ang2[i, j] = 0
+                ae[i, j] *= ang2[i, j]
     
-    if count != 0 and id_[0] != -1:
-    	ang2[id_] = 0
-    	ae=ae*ang2
     return ae, vr
 
+#%%
+
+
 ae, vr = vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0)
-#%%
-print(img)
 
-#%%
+
 slevels = getlevel(img, [0.2, 0.95])
-plt.imshow(bytscl(img, 
-                  slevels[1], 
-                  slevels[0]),
-                  cmap = "gray")
 
+new_img = bytscl(img, 
+                  slevels[1], 
+                  slevels[0])
+plt.imshow(new_img + ae - vr, cmap = "gray")
+
+
+
+
+
+lin_img = linearization(fname)
+
+print(lin_img.shape)
+#plt.imshow(lin_img + vr, cmap = "gray")
