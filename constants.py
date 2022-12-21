@@ -7,32 +7,36 @@ class constants(object):
     polo_radius = 6356.755
     
     @staticmethod
-    def projection_area(proj_area: str = 2) -> int:
+    def projection_area(proj: int = 2) -> int:
         
         """
-        Projection area values 
+        Projection area values in pixels
         """
-        areap_values = {1: 256, 
-                        2: 512, 
-                        3: 1024, 
-                        4: 2048}
+        areas = {1: 256, 
+                 2: 512, 
+                 3: 1024, 
+                 4: 2048}
         
-        return areap_values[proj_area]
+        return areas[proj]
 
     @staticmethod
-    def emission_band(band:str = "OH") -> int:
+    def emission_band(band: str = "OH") -> int:
         
         """
         Altitude of emission layer (in km) 
         OH = IR-87
         """
-        altitude_values = {"O5": 96, 
-                           "O6": 250, 
-                           "OH": 87, 
-                           "O2": 89, 
-                           "NaD": 94}
+        altitudes = {"OH": 87, 
+                     "O2": 89, 
+                     "Na": 94,
+                     "O5": 96, 
+                     "O6": 250}
         
-        return altitude_values[band]
+        return altitudes[band]
+    
+    @staticmethod
+    def sites():
+        return 
     
     
 def main():
