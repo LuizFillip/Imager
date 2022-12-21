@@ -68,7 +68,7 @@ def save_json(infile: str, name: str = "cariri.json") -> None:
         
         
 
-def find_calibration(time: datetime.datetime, 
+def get_calibration(time: datetime.datetime, 
                      filename:str = "CA.json") -> dict:
     """Open json file for the last calibration for the time"""
     
