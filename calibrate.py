@@ -46,7 +46,7 @@ def calibration_infos_by_date(infile: str, folder: str) -> dict:
     return {str(date): convert_infos_into_dict(infile, 
                                                folder)}
 
-def run_for_all_files(infile: str)-> dict:
+def run_for_all_files(infile: str) -> dict:
     """Get path with all times calibration and append to one single dictionary"""
     _, folders, _ = next(os.walk(infile))
 
@@ -61,9 +61,10 @@ def run_for_all_files(infile: str)-> dict:
 
 
 
-def save_json(infile: str, name: str = "cariri.json") -> None:
+def save_json(infile: str, 
+              name: str = "cariri.json") -> None:
     """Save results"""
-    with open(infile + "cariri.json", 'w') as f:
+    with open(infile + name, 'w') as f:
         json.dump(run_for_all_files(infile), f)
         
         
@@ -72,7 +73,7 @@ def get_calibration(time: datetime.datetime,
                      filename:str = "CA.json") -> dict:
     """Open json file for the last calibration for the time"""
     
-    infile = os.path.join(str(Path.cwd()), "calibracao")
+    infile = os.path.join(str(Path.cwd()), "calibrate")
     dat = json.load(open(os.path.join(infile, filename)))
 
     dates = pd.to_datetime(list(dat.keys()))
