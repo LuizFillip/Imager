@@ -35,19 +35,29 @@ class constants(object):
         return areas[proj]
 
     @staticmethod
-    def emission_band(band: str = "OH") -> int:
+    def emission_band(band: str = "OH",
+                      keys = False, 
+                      items = False, 
+                      values = False) -> int:
         
         """
         Altitude of emission layer (in km) 
         OH (Hydroxilia) = IR-87
         """
-        altitudes = {"OH": 87, 
+        band_alts = {"OH": 87, 
                      "O2": 89, 
                      "Na": 94,
                      "O5": 96, 
                      "O6": 250}
         
-        return altitudes[band]
+        if keys:
+            return list(band_alts.keys())
+        elif values:
+            return list(band_alts.values())
+        elif items:
+            return list(band_alts.items())
+        else:
+            return band_alts[band]
     
     @staticmethod
     def sites(site_name:str = "CA") -> tuple:
@@ -75,6 +85,7 @@ class constants(object):
 def main():
     c = constants()
     
-    #print(c.emission_band())
-    print(c.sites())
+    print(c.emission_band(values = True))
+    #print(c.equator_radius)
     
+main()
