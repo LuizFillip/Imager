@@ -3,8 +3,8 @@ import numpy as np
 from calibrate import get_calibration
 from image_utils import imager_fname
 from constants import constants as c
-from base import getlevel, bytscl
-from skimage import io
+
+
 
 class get_attributes:
 
@@ -26,24 +26,10 @@ class get_attributes:
 
         self.rotation = np.radians(float(dat["Rotation"]))
         
-    @property
-    def earth_radius(self):
-        """
-        Compute earth radius from a latitude
-        """
-        eq = c.equator_radius
-        ep = c.polo_radius
-        
-        num = pow(eq * ep, 2)
-        den = (pow(eq * np.sin(self.lat_obs), 2) + 
-               pow(ep * np.cos(self.lat_obs), 2.0))
-        
-        return np.sqrt(num / den)
-
     
 
-
-def lens_function(z, c):    
+    
+def lens_function(z: float, c: float) -> float:
     """
     fourth order polynomial from fitting coefficients
     from lens function
@@ -60,9 +46,12 @@ def projection_factor(size_x = 512, proj_area = 512):
     return proj_area / size_x
 
 
-def projection_area(i, j, half_x, half_y, attrs, alt_ag):
-
-    Re = attrs.earth_radius
+def projection_area(i: int, 
+                    j:int, 
+                    half_x:int, 
+                    half_y:int, attrs, alt_ag):
+    """Compute the projection for each pixel in the image"""
+    Re = c().equator_radius
     alpha = projection_factor()
     arg = pow(half_x - i, 2) + pow(j - half_y, 2)
 
@@ -71,7 +60,7 @@ def projection_area(i, j, half_x, half_y, attrs, alt_ag):
 
 def elevation_angle(a, attrs, alt_ag):
     """Elevation angle which an observer see the layer structure"""
-    Re = attrs.earth_radius
+    Re = c().equator_radius
     H = attrs.alt_obs
     
     return np.arctan2((Re + alt_ag) * np.sin(a), 
@@ -80,35 +69,39 @@ def elevation_angle(a, attrs, alt_ag):
 
 def azimuth_angle(i, j, half_x, half_y):
     """Anzimuth angle for each point (i, j) of image"""
-    
     azimuth = np.arctan2(half_x - i, j - half_y) #verificar com Cristiano
     if azimuth < 0:
         azimuth += 2 * np.pi 
     return azimuth
 
 
-def make_mapping(original, fname):
+def make_mapping(fname, 
+                 altitude_of_emission = 87, 
+                 projection = 512):
     
     
     attrs = get_attributes(fname)
     
     rot = attrs.rotation
-    alt_ag = c.emission_band(imager_fname(fname).emission)
+    alt_ag = altitude_of_emission
             
-    size_x, size_y = original.shape[:]
-    half_x = (size_x - 1) / 2  
-    half_y = (size_y - 1) / 2
+    #size_x, size_y = original.shape[:]
+    half_x = (projection - 1) / 2  
+    half_y = (projection - 1) / 2
     
-    az = np.zeros((size_x, size_y))
-    a = np.zeros((size_x, size_y))
-    ze = np.zeros((size_x, size_y))
-    lf = np.zeros((size_x, size_y))
+    az = np.zeros((projection, projection))
+    a = np.zeros((projection, projection))
+    ze = np.zeros((projection, projection))
+    lf = np.zeros((projection, projection))
     
-    imgmap = np.zeros((2, size_x, size_y), dtype=np.int16)
+    imgmap = np.zeros((2, 
+                       projection, 
+                       projection), 
+                       dtype = np.int16)
     
     
-    for i in range(size_x):
-        for j in range(size_y):
+    for i in range(projection):
+        for j in range(projection):
             
             az[i, j] = azimuth_angle(i, j, half_x, half_y)
             
@@ -125,26 +118,9 @@ def make_mapping(original, fname):
 
 
 
-def linearization(fname, 
-                  horizontal_flip = True):
-    
-    
-    original = io.imread(fname, as_gray = True)
-    
-    mapping = make_mapping(original, fname)
-    
-    _, size_x, size_y = mapping.shape
-    
-    map_x = mapping[0, 0: size_x - 1, 0: size_y - 1]
-    map_y = mapping[1, 0: size_x - 1, 0: size_y - 1]
-    
-    new_img = original[map_x, map_y] 
-    
-    if horizontal_flip:
-        
-        new_img = np.flipud(new_img)
-    
-    return new_img
+
+
+
 
 
 
@@ -152,7 +128,14 @@ def linearization(fname,
 def main():
     fname = "database/examples/OH_CA_20181112_002024.tif" 
     
-
-    linearized = linearization(fname)
     
+    #mapping = make_mapping(fname)
+    
+    #print(c().emission_band())
+    
+    
+
+
+
+main()    
     
