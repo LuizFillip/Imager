@@ -18,29 +18,7 @@ def get_date_from_folder(folder: str) -> datetime.date:
 
 
 
-def get_calibration(time: datetime.datetime, 
-                    site:str = "CA") -> dict:
-    """Open json file for the last calibration for the time"""
-    
-    infile = os.path.join(str(Path.cwd()), 
-                          "calibrate", 
-                          site,
-                          f"{site}.json")
-    
-    dat = json.load(open(infile))
 
-    ts = pd.to_datetime(list(dat.keys()))
-
-    for num in range(len(ts) - 1):
-        
-        dt1 = pd.Timestamp(ts[num])
-        dt2 = pd.Timestamp(ts[num + 1])
-        
-        if (dt1 > time) and (dt2 < time):
-            print(dat[str(dt2.date())])
-        
-        elif (time > max(ts)):
-            print(dat[str(max(ts).date())])
         
 
 
@@ -64,7 +42,7 @@ class load(object):
         
         
     @property
-    def result(self):
+    def result(self) -> dict:
         """Return site parameters and lens functions result 
         and update into dictionary"""
         out_dict = {}
@@ -80,7 +58,7 @@ class load(object):
         return out_dict
     
     @property
-    def data(self):
+    def data(self) -> pd.DataFrame:
         """Return calibrate data from stars"""
         header = remove_values(self.cal_section[0].split("  "))
     
@@ -101,7 +79,6 @@ def run_for_all_files(site: str = "CA",
     
     _, folders, _ = next(os.walk(infile))
     
-    
     out_dict = {}
     
     for folder in folders:
@@ -109,16 +86,40 @@ def run_for_all_files(site: str = "CA",
         date = get_date_from_folder(folder)
         out_dict.update({str(date): dat.result})
         
-        
     if save:
-        with open(infile + site + ".json", 'w') as f:
+        with open(os.path.join(infile, f"{site}.json"), 'w') as f:
             json.dump(out_dict, f)
 
     return out_dict
 
-def main():
-    run_for_all_files()
-    time = date_from_doy(2011, 269)
-    print(time)
-    site = "CA"
 
+def get_calibration(time: datetime.datetime, 
+                    site: str = "CA") -> dict:
+    """Open json file for the last calibration for the time"""
+    
+    infile = os.path.join(str(Path.cwd()), 
+                          "calibrate", 
+                          site,
+                          f"{site}.json")
+    
+    dat = json.load(open(infile))
+
+    ts = pd.to_datetime(list(dat.keys()))
+
+    for num in range(len(ts) - 1):
+        
+        dt1 = pd.Timestamp(ts[num])
+        dt2 = pd.Timestamp(ts[num + 1])
+        
+        if (dt1 > time) and (dt2 < time):
+            return dat[str(dt2.date())]
+        
+        elif (time > max(ts)):
+            return dat[str(max(ts).date())]
+
+def main():
+    site = "CA"
+    df = run_for_all_files(site)
+   
+    
+main()
