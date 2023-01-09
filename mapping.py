@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from calibrate import get_calibration
 from image_utils import imager_fname
@@ -9,8 +8,10 @@ from constants import constants as c
 class get_attributes:
 
     def __init__(self, fname):
-        time = imager_fname(fname).datetime
-        dat = get_calibration(time)
+        file_attrs = imager_fname(fname)
+        time_file = file_attrs.datetime
+        site_file = file_attrs.site
+        dat = get_calibration(time_file, site = site_file)
         
         
         self.lat_obs = np.radians(float(dat["Latitude"]))
@@ -122,6 +123,11 @@ def make_mapping(fname,
 
 fname = "database/examples/OH_CA_20181112_002024.tif" 
 
+
+df = get_attributes(fname)
+
+
+print(df)
 
 def save_maps(fname):
 
