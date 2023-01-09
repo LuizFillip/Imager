@@ -85,7 +85,6 @@ def make_mapping(fname,
     rot = attrs.rotation
     alt_ag = altitude_of_emission
             
-    #size_x, size_y = original.shape[:]
     half_x = (projection - 1) / 2  
     half_y = (projection - 1) / 2
     
@@ -121,21 +120,23 @@ def make_mapping(fname,
 
 
 
+fname = "database/examples/OH_CA_20181112_002024.tif" 
 
 
+def save_maps(fname):
 
-
-def main():
-    fname = "database/examples/OH_CA_20181112_002024.tif" 
+    altitudes = c.emission_band(values = True)
     
+    maps = []
+        
+    for alt in altitudes:
+        maps.append(make_mapping(fname, 
+                                 altitude_of_emission = alt))
+        
     
-    #mapping = make_mapping(fname)
-    
-    #print(c().emission_band())
-    
+    return maps    
     
 
 
 
-main()    
     

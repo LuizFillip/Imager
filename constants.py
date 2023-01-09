@@ -85,7 +85,5 @@ class constants(object):
 def main():
     c = constants()
     
-    print(c.emission_band(values = True))
     #print(c.equator_radius)
     
-main()
