@@ -1,6 +1,8 @@
 import datetime 
 import os
 import typing as T
+import pandas as pd
+
 
 class imager_fname(object):
     
@@ -49,12 +51,21 @@ def get_files(infile: T.TextIO, extension = ".tif"):
     
     return [f for f in files if f.endswith(extension)]
 
+def date_from_doy(year: int, doy:int) -> datetime.datetime:
+    """Return date from year and doy"""
+    return pd.Timestamp(datetime.date(year, 1, 1) + datetime.timedelta(doy - 1))
 
-    
+
+def remove_values(list_to_remove: list, 
+                  item_to_remove:str = "") -> list:
+    """Remove value in list"""
+    return [item.strip() for item in list_to_remove if item != ""]
+
+
 def filename_from_date(t: datetime.datetime, 
                        layer:str = "O6", 
                        site:str = "CA") -> str:
-    """Get EMBRACE filename format from site, layer and datetime"""
+    """Create EMBRACE filename format from site, layer and datetime"""
     return f'{layer}_{site}_{t.strftime("%Y%m%d_%H%M%S")}'
 
 
