@@ -33,19 +33,6 @@ class imager_fname(object):
 def get_files(infile: T.TextIO, extension = ".tif"): 
     """
     get all files in directory like glob
-
-    Parameters
-    ----------
-    infile : TYPE
-        DESCRIPTION.
-    extension : TYPE, optional
-        DESCRIPTION. The default is ".tif".
-
-    Returns
-    -------
-    list
-        DESCRIPTION.
-
     """
     _, _, files = next(os.walk(infile))
     
@@ -69,9 +56,9 @@ def filename_from_date(t: datetime.datetime,
     return f'{layer}_{site}_{t.strftime("%Y%m%d_%H%M%S")}'
 
 
-def convert_tif_to_png(filename, path = ""):
+def convert_tif_to_png(filename, path = None):
     """Convert to PNG"""
-    if path == "":
+    if path is not None:
         src = os.path.join(path, filename)
         dest = os.path.join(path, filename.replace(".tif",'.png') )     
         
@@ -83,4 +70,13 @@ def convert_tif_to_png(filename, path = ""):
     except RuntimeError:
         print("All files was converted")
         
+path_in = "database/AllSky/2023/"
+
+def run_in_path(path_in):
+
+    _, _, files = next(os.walk(path_in))
+    
+    for filename in files:
+        
+        convert_tif_to_png(filename, path = path_in)
         

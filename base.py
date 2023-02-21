@@ -32,6 +32,7 @@ def getlevel(array, sref):
     return slevels
 
 def bytscl(array, max_slevel, min_slevel):
+    
     top = np.uint16(2**16-1) #Top value of an array of 16bits
 
     dim_x, dim_y = array.shape
@@ -39,11 +40,14 @@ def bytscl(array, max_slevel, min_slevel):
     for j in range(dim_x):
         for i in range(dim_y):
             if min_slevel <= array[i, j] <= max_slevel:
-                array[i,j] = (top + 1)*(array[i,j] - min_slevel-1)/(max_slevel-min_slevel)
-            elif array[i,j]> max_slevel:
-                array[i,j]=top
-            elif array[i,j]<min_slevel:
-                array[i,j]=0
+                array[i, j] = (top + 1)*(array[i, j] - min_slevel-1
+                                        )/(max_slevel - min_slevel)
+                
+            elif array[i, j] > max_slevel:
+                array[i, j] = top
+                
+            elif array[i, j] < min_slevel:
+                array[i, j] = 0
     
     return array
 
