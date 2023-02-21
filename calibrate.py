@@ -2,7 +2,7 @@ import datetime
 import os
 import json 
 import pandas as pd
-from image_utils import date_from_doy, remove_values
+from AllSky.image_utils import remove_values
 import sys
 os.path.dirname(sys.executable)
 from pathlib import Path
@@ -15,11 +15,6 @@ def get_date_from_folder(folder: str) -> datetime.date:
     doy = int(args[1])
     
     return datetime.date(year, 1, 1) + datetime.timedelta(doy - 1)
-
-
-
-
-        
 
 
 class load(object):
@@ -96,13 +91,21 @@ def run_for_all_files(site: str = "CA",
 def get_calibration(time: datetime.datetime, 
                     site: str = "CA") -> dict:
     """Open json file for the last calibration for the time"""
-    
-    infile = os.path.join(str(Path.cwd()), 
-                          "calibrate", 
-                          site,
-                          f"{site}.json")
-    
-    dat = json.load(open(infile))
+    try:
+        infile = os.path.join(str(Path.cwd()), 
+                              "calibrate", 
+                              site,
+                              f"{site}.json")
+        
+        dat = json.load(open(infile))
+    except:
+        infile = os.path.join(str(Path.cwd()), 
+                              "AllSky",
+                              "calibrate", 
+                              site,
+                              f"{site}.json")
+        
+        dat = json.load(open(infile))
 
     ts = pd.to_datetime(list(dat.keys()))
 
@@ -122,4 +125,3 @@ def main():
     df = run_for_all_files(site)
    
     
-main()
