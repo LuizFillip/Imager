@@ -40,7 +40,9 @@ def save_img(fig,
     
     plt.ioff()
     
+    
     fig.savefig(save_in, 
+                dpi = 300, 
                 pad_inches = 0, 
                 bbox_inches = "tight", 
                 transparent = True)
@@ -62,9 +64,7 @@ def visualization(image,
     ax.imshow(image, cmap = "gray")
     
     ax.set_axis_off()
-    
-    #ax.margins(0)
-    
+        
     draw_labels(ax, 
                 infile, 
                 fontsize = 20, 
