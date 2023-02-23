@@ -2,17 +2,10 @@ import numpy as np
 from skimage import io
 from constants import constants as c
 from mapping import lens_function, get_attributes, linearization
-import matplotlib.pyplot as plt
-from base import getlevel, bytscl
 
-
-
-fname = "database/examples/OH_CA_20181112_002024.tif" 
-
-img = io.imread(fname, as_gray = True)
-
-
-def vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0):
+def vanRhijn_atmExtinction(img, 
+                           a = 0.2, 
+                           Ftheta = 0):
     
     xsize, ysize = img.shape
 
@@ -64,24 +57,12 @@ def vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0):
     
     return ae, vr
 
-#%%
+def main():
 
-
-ae, vr = vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0)
-
-
-slevels = getlevel(img, [0.2, 0.95])
-
-new_img = bytscl(img, 
-                  slevels[1], 
-                  slevels[0])
-plt.imshow(new_img + ae - vr, cmap = "gray")
-
-
-
-
-
-lin_img = linearization(fname)
-
-print(lin_img.shape)
-#plt.imshow(lin_img + vr, cmap = "gray")
+    fname = "database/examples/OH_CA_20181112_002024.tif" 
+    
+    img = io.imread(fname, as_gray = True)
+    
+    ae, vr = vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0)
+    
+    
