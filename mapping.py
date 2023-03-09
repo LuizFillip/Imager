@@ -118,31 +118,32 @@ def make_mapping(fname,
 
 
 
+def save_maps():
+    
+    import xarray as xr
+    
+    fname = "database/examples/OH_CA_20181112_002024.tif" 
 
 
-
-fname = "database/examples/OH_CA_20181112_002024.tif" 
-
-
-df = get_attributes(fname)
-
-
-print(df)
-
-def save_maps(fname):
-
+    def make_maps_in_all_altitudes(fname):
+    
+        altitudes = c.emission_band(values = True)
+        
+        return [make_mapping(fname, altitude_of_emission = alt) 
+                 for alt in altitudes]  
+        
+    
+    
+    maps = save_maps(fname)
+    
     altitudes = c.emission_band(values = True)
     
-    maps = []
-        
-    for alt in altitudes:
-        maps.append(make_mapping(fname, 
-                                 altitude_of_emission = alt))
-        
+    ds = xr.DataArray(maps, 
+                      coords = {"altitude": altitudes, 
+                                "layer": [0, 1], 
+                                "dimx": range(512), 
+                                "dimy": range(512)})
     
-    return maps    
-    
+    ds
 
 
-
-    
