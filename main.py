@@ -3,7 +3,7 @@ from build import paths as p
 from AllSky.core import rotated
 from AllSky.base import getlevel, bytscl
 from AllSky.labeling import visualization, save_img
-
+import os
 from skimage import io
 
 
@@ -26,7 +26,7 @@ def processing_img(fname):
     return visualization(new_img, fname, 
                             width = 10, 
                             height = 10)
-import os
+
 def process_all_images(files): 
     
     files  = [f for f in files if f.endswith("tif")]
@@ -45,15 +45,11 @@ def process_all_images(files):
 #process_all_images(files)
 
 
-def images_to_gif():
+def images_to_gif(fp_in, fp_out):
     import glob
     import contextlib
     from PIL import Image
-    
-    # filepaths
-    fp_in = "database/AllSky/2023/*.png"
-    fp_out = "image.gif"
-    
+
     # use exit stack to automatically close opened images
     with contextlib.ExitStack() as stack:
     
@@ -64,8 +60,16 @@ def images_to_gif():
         # extract  first image from iterator
         img = next(imgs)
     
-        img.save(fp=fp_out, format='GIF', append_images=imgs,
-                 save_all=True, duration=200, loop=0, 
-                 dpi=(300, 300), quality=150)
+        img.save(fp = fp_out, 
+                 format='GIF', 
+                 append_images = imgs,
+                 save_all = True, 
+                 duration = 500, 
+                 loop = 0, 
+                 dpi = (300, 300), 
+                 quality=150)
+        
 
-images_to_gif()
+fp_in = "C:\\plots3\\*.png"
+fp_out = "image.gif"
+images_to_gif(fp_in, fp_out)
