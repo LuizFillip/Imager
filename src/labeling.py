@@ -42,10 +42,10 @@ def save_img(fig,
     
     
     fig.savefig(save_in, 
-                dpi = 300, 
+                dpi = 100, 
                 pad_inches = 0, 
                 bbox_inches = "tight", 
-                transparent = True)
+                transparent = False)
     plt.clf()   
     plt.close()
     return 

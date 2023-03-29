@@ -1,0 +1,9 @@
+src/__pycache__/
+src/example/
+__pycache__/
+/calibrate/
+/idl_codes/
+/Esmeralda/
+
+
+*.for

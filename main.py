@@ -57,17 +57,17 @@ def images_to_gif(fp_in, fp_out):
         imgs = (stack.enter_context(Image.open(f))
                 for f in sorted(glob.glob(fp_in)))
     
-        # extract  first image from iterator
+        # extract first image from iterator
         img = next(imgs)
     
         img.save(fp = fp_out, 
-                 format='GIF', 
+                 format = 'GIF', 
                  append_images = imgs,
                  save_all = True, 
-                 duration = 500, 
+                 duration = 1000, 
                  loop = 0, 
                  dpi = (300, 300), 
-                 quality=150)
+                 quality = 150)
         
 
 fp_in = "C:\\plots3\\*.png"

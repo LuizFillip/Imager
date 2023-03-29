@@ -3,8 +3,6 @@ from calibrate import get_calibration
 from image_utils import imager_fname
 from constants import constants as c
 
-
-
 class get_attributes:
 
     def __init__(self, fname):
@@ -27,8 +25,6 @@ class get_attributes:
 
         self.rotation = np.radians(float(dat["Rotation"]))
         
-    
-
     
 def lens_function(z: float, c: float) -> float:
     """
