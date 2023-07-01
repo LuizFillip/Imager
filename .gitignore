@@ -1,5 +1,6 @@
 src/__pycache__/
 src/example/
+/src/plotting/__pycache__/
 __pycache__/
 /calibrate/
 /idl_codes/
