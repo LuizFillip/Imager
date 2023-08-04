@@ -138,7 +138,8 @@ def save_maps():
                       coords = {"altitude": altitudes, 
                                 "layer": [0, 1], 
                                 "dimx": range(512), 
-                                "dimy": range(512)})
+                                "dimy": range(512)}
+                      )
     
     ds
 

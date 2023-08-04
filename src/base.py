@@ -67,12 +67,12 @@ def bytscl2(array,
     # note that IDL uses slightly different formulae for bytscaling floats and ints.
     # here we apply only the FLOAT formula...
 
-    if maximum is None: maximum = np.nanmax(array)
-    if minimum is None: mininum = np.nanmin(array)
+    if maximum == None: maximum = np.nanmax(array)
+    if minimum == None: mininum = np.nanmin(array)
 
     # return (top+0.9999)*(array-min)/(max-min)
     return np.maximum(np.minimum(
-        ((top + 0.9999) * (array - min) / (max - min)).astype(np.int16), top), 0)
+        ((top + 0.9999) * (array - mininum) / (maximum - mininum)).astype(np.int16), top), 0)
 
 
 def getlevel2(im2, sref_min, sref_max):
@@ -111,8 +111,10 @@ def getlevel2(im2, sref_min, sref_max):
             res_sa[i] = sa
 
         res_sa2 = res_sa.tolist()
-        res = res_sa[np.where((res_sa > sum_histogram * sref[0]) & 
-                             (res_sa < sum_histogram * sref[1]))]
+        res = res_sa[np.where(
+            (res_sa > sum_histogram * sref[0]) & 
+            (res_sa < sum_histogram * sref[1]))
+            ]
         nr = len(res)
 
         sl0 = res_sa2.index(res[0])

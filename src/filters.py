@@ -64,5 +64,3 @@ def main():
     img = io.imread(fname, as_gray = True)
     
     ae, vr = vanRhijn_atmExtinction(img, a = 0.2, Ftheta = 0)
-    
-    
