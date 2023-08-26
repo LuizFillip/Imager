@@ -1,23 +1,25 @@
 import numpy as np
 from skimage import io
 from constants import constants as c
-from mapping import lens_function, get_attributes, linearization
+import imager as im
 
-def vanRhijn_atmExtinction(img, 
-                           a = 0.2, 
-                           Ftheta = 0):
+def vanRhijn_atmExtinction(
+        img, fname,
+        a = 0.2, 
+        Ftheta = 0):
     
     xsize, ysize = img.shape
 
     Re = c.equator_radius
 
-    attrs = get_attributes(fname)
+    attrs = im.get_attributes(fname)
     xm = attrs.xm
     ym = attrs.ym
 
     z = np.arange(181) * 0.5* (np.pi/180)
 
-    fitting = np.polyfit(lens_function(z, attrs), z*180/np.pi,  4)
+    fitting = np.polyfit(
+        im.lens_function(z, attrs), z*180/np.pi,  4)
     fitting = fitting[::-1]
     
     vr = np.zeros((xsize, ysize))

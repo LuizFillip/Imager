@@ -3,7 +3,8 @@ from PIL import Image, ImageDraw
 
 def circle(img, center = 0, radius = 360):
     
-    img = Image.fromarray((img * 1).astype(np.uint8)).convert('RGB')
+    img = Image.fromarray(
+        (img * 1).astype(np.uint8)).convert('RGB')
 
 
     npImage = np.array(img)

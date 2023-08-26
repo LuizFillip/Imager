@@ -1,9 +1,7 @@
 import numpy as np
-from AllSky.calibrate import get_calibration
-from AllSky.image_utils import imager_fname
 from skimage import io
+import imager as im
 import cv2
-from AllSky.base import getlevel2, bytscl2
 
 
 def int45(A):
@@ -14,8 +12,8 @@ def int45(A):
         
 
 def get_level(filt_img, sref_min = 0.0099, sref_max = 0.9): 
-    variavel = getlevel2(filt_img, sref_min, sref_max)
-    return bytscl2(filt_img, variavel[1], variavel[0])
+    variavel = im.getlevel2(filt_img, sref_min, sref_max)
+    return im.bytscl2(filt_img, variavel[1], variavel[0])
     
     
 def brigthness(img, alpha = 9., beta = .09):
@@ -25,9 +23,9 @@ def brigthness(img, alpha = 9., beta = .09):
 def rotated(image, fname):
     
     
-    time = imager_fname(fname).datetime
+    time = im.imager_fname(fname).datetime
     
-    dat = get_calibration(time)
+    dat = im.get_calibration(time)
     angle = float(dat["Rotation"])
 
     #if dat["Horizontal Flip"] == "ON":
