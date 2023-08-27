@@ -12,8 +12,8 @@ def int45(A):
         
 
 def get_level(filt_img, sref_min = 0.0099, sref_max = 0.9): 
-    variavel = im.getlevel2(filt_img, sref_min, sref_max)
-    return im.bytscl2(filt_img, variavel[1], variavel[0])
+    a, b = im.getlevel2(filt_img, sref_min, sref_max)
+    return im.bytscl2(filt_img, a, b)
     
     
 def brigthness(img, alpha = 9., beta = .09):
@@ -28,10 +28,10 @@ def rotated(image, fname):
     dat = im.get_calibration(time)
     angle = float(dat["Rotation"])
 
-    #if dat["Horizontal Flip"] == "ON":
-     #   image = cv2.flip(image, 1)
-    #elif dat["Vertical   Flip"] == "ON":
-        #image = cv2.flip(image, 1)
+    if dat["Horizontal Flip"] == "ON":
+        image = cv2.flip(image, 1)
+    elif dat["Vertical   Flip"] == "ON":
+        image = cv2.flip(image, 1)
         
     image = cv2.flip(image, 0)
     (h, w) = image.shape[:2]
@@ -40,12 +40,37 @@ def rotated(image, fname):
   
     return cv2.warpAffine(image, M, (w, h)) 
 
+def processing_img(
+        fname, 
+        size = 10,
+        hori_flip = True, 
+        vert_flip = False):
+        
+    img2 = im.rotated(
+        io.imread(fname, as_gray = True), fname
+        )
+    
+    a, b = tuple(im.getlevel(img2, [0.3, 0.94]))
+  
+    new_img = im.bytscl(img2, b, a)
+    
+    if hori_flip: new_img = np.fliplr(new_img)
+        
+    if vert_flip: new_img = np.flipud(new_img)
+        
+      
+    return im.visualization(
+        new_img, fname, 
+        width = size, 
+        height = size
+        )
 
 
-
-def linearization(fname, 
-                  mapping, 
-                  horizontal_flip = True):
+def linearization(
+        fname, 
+        mapping, 
+        horizontal_flip = True
+        ):
     
     
     original = io.imread(fname, as_gray = True)
