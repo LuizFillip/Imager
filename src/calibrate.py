@@ -1,20 +1,23 @@
-import datetime
+import datetime as dt
 import os
 import json 
 import pandas as pd
-from AllSky.image_utils import remove_values
 import sys
 os.path.dirname(sys.executable)
 from pathlib import Path
 
+def remove_values(list_to_remove: list, 
+                  item_to_remove:str = "") -> list:
+    """Remove value in list"""
+    return [item.strip() for item in list_to_remove if item != ""]
 
-def get_date_from_folder(folder: str) -> datetime.date:
+def get_date_from_folder(folder: str) -> dt.date:
     """split filename arguments and get calibration date"""
     args = folder.split(".")
     year = int(args[0])
     doy = int(args[1])
     
-    return datetime.date(year, 1, 1) + datetime.timedelta(doy - 1)
+    return dt.date(year, 1, 1) + dt.timedelta(doy - 1)
 
 
 class load(object):
@@ -63,20 +66,22 @@ class load(object):
 
 
 
-def run_for_all_files(site: str = "CA", 
-                      save: bool = True) -> dict:
+def run_for_all_files(
+        site: str = "CA", 
+        save: bool = True
+        ) -> dict:
     
     """Get path with all times calibration 
     and append to one single dictionary"""
-    infile = os.path.join(str(Path.cwd()), 
-                          "calibrate", 
-                           site)
-    
-    _, folders, _ = next(os.walk(infile))
-    
+    infile = os.path.join(
+        os.getcwd(), 
+        "calibrate", 
+        site
+        )
+        
     out_dict = {}
     
-    for folder in folders:
+    for folder in os.listdir(infile):
         dat = load(infile, folder)
         date = get_date_from_folder(folder)
         out_dict.update({str(date): dat.result})
@@ -88,19 +93,21 @@ def run_for_all_files(site: str = "CA",
     return out_dict
 
 
-def get_calibration(time: datetime.datetime, 
-                    site: str = "CA") -> dict:
+def get_calibration(
+        time: dt.datetime, 
+        site: str = "CA"
+        ) -> dict:
     """Open json file for the last calibration for the time"""
     try:
-        infile = os.path.join(str(Path.cwd()), 
+        infile = os.path.join(os.getcwd(), 
                               "calibrate", 
                               site,
                               f"{site}.json")
         
         dat = json.load(open(infile))
     except:
-        infile = os.path.join(str(Path.cwd()), 
-                              "AllSky",
+        infile = os.path.join(os.getcwd(), 
+                              "imager",
                               "calibrate", 
                               site,
                               f"{site}.json")
@@ -124,4 +131,13 @@ def main():
     site = "CA"
     df = run_for_all_files(site)
    
-    
+site = 'CA'   
+infile = os.path.join(os.getcwd(), 
+                      "imager",
+                      "calibrate", 
+                      site,
+                      f"{site}.json")
+
+dat = json.load(open(infile))
+
+dat

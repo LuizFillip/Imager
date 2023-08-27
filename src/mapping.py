@@ -1,15 +1,13 @@
 import numpy as np
-from calibrate import get_calibration
-from image_utils import imager_fname
-from constants import constants as c
+import imager as im
 
 class get_attributes:
 
     def __init__(self, fname):
-        file_attrs = imager_fname(fname)
+        file_attrs = im.imager_fname(fname)
         time_file = file_attrs.datetime
         site_file = file_attrs.site
-        dat = get_calibration(time_file, site = site_file)
+        dat = im.get_calibration(time_file, site = site_file)
         
         
         self.lat_obs = np.radians(float(dat["Latitude"]))
@@ -48,7 +46,7 @@ def projection_area(i: int,
                     half_x:int, 
                     half_y:int, attrs, alt_ag):
     """Compute the projection for each pixel in the image"""
-    Re = c().equator_radius
+    Re = im.constants().equator_radius
     alpha = projection_factor()
     arg = pow(half_x - i, 2) + pow(j - half_y, 2)
 
@@ -57,7 +55,7 @@ def projection_area(i: int,
 
 def elevation_angle(a, attrs, alt_ag):
     """Elevation angle which an observer see the layer structure"""
-    Re = c().equator_radius
+    Re = im.constants().equator_radius
     H = attrs.alt_obs
     
     return np.arctan2((Re + alt_ag) * np.sin(a), 
@@ -72,9 +70,11 @@ def azimuth_angle(i, j, half_x, half_y):
     return azimuth
 
 
-def make_mapping(fname, 
-                 altitude_of_emission = 87, 
-                 projection = 512):
+def make_mapping(
+        fname, 
+        altitude_of_emission = 87, 
+        projection = 512
+        ):
     
     
     attrs = get_attributes(fname)
@@ -90,22 +90,28 @@ def make_mapping(fname,
     ze = np.zeros((projection, projection))
     lf = np.zeros((projection, projection))
     
-    imgmap = np.zeros((2, 
-                       projection, 
-                       projection), 
-                       dtype = np.int16)
-    
+    imgmap = np.zeros(
+        (2, 
+        projection, 
+        projection), 
+        dtype = np.int16
+        )
+ 
     
     for i in range(projection):
         for j in range(projection):
             
-            az[i, j] = azimuth_angle(i, j, half_x, half_y)
+            az[i, j] = azimuth_angle(
+                i, j, half_x, half_y)
             
-            a[i, j] = projection_area(i, j, half_x, half_y, attrs, alt_ag)
+            a[i, j] = projection_area(
+                i, j, half_x, half_y, attrs, alt_ag)
             
-            ze[i, j] = elevation_angle(a[i, j], attrs, alt_ag)
+            ze[i, j] = elevation_angle(
+                a[i, j], attrs, alt_ag)
             
-            lf[i, j] = lens_function(ze[i, j], attrs)
+            lf[i, j] = lens_function(
+                ze[i, j], attrs)
     
             imgmap[0, i, j] = attrs.xm - lf[i, j] * np.sin(az[i, j] - rot)
             imgmap[1, i ,j] = attrs.ym + lf[i, j] * np.cos(az[i, j] - rot)
@@ -123,7 +129,7 @@ def save_maps():
 
     def make_maps_in_all_altitudes(fname):
     
-        altitudes = c.emission_band(values = True)
+        altitudes = im.constants.emission_band(values = True)
         
         return [make_mapping(fname, altitude_of_emission = alt) 
                  for alt in altitudes]  
@@ -132,7 +138,7 @@ def save_maps():
     
     maps = save_maps(fname)
     
-    altitudes = c.emission_band(values = True)
+    altitudes = im.constants.emission_band(values = True)
     
     ds = xr.DataArray(maps, 
                       coords = {"altitude": altitudes, 

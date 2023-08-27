@@ -76,25 +76,32 @@ def save_img(fig,
     plt.close()
     return 
 
-def visualization(image, 
-                  infile,
-                  width = 12, 
-                  height = 12):
+def visualization(
+        image, 
+        infile,
+        width = 12, 
+        height = 12
+        ):
     
     """Read, processing and save it"""
     
 
-    fig = plt.figure(figsize = (width, height), dpi = 100)
+    fig = plt.figure(
+        figsize = (width, height), 
+        dpi = 300
+        )
     ax = fig.add_subplot()
     
     ax.imshow(image, cmap = "gray")
     
     ax.set_axis_off()
         
-    draw_labels(ax, 
-                infile, 
-                fontsize = 20, 
-                color = "white")
+    draw_labels(
+        ax, 
+        infile, 
+        fontsize = 20, 
+        color = "white"
+        )
 
     plt.show()
     
