@@ -2,7 +2,6 @@ import numpy as np
 from skimage import io
 import imager as im
 import cv2
-from scipy.ndimage import median_filter
 
 
 def int45(A):
@@ -15,13 +14,17 @@ def int45(A):
 def get_level(
         filt_img, 
         sref_min = 0.0099, sref_max = 0.9): 
-    a, b = im.getlevel2(filt_img, sref_min, sref_max)
+    a, b = im.getlevel2(
+        filt_img, 
+        sref_min, 
+        sref_max)
     return im.bytscl2(filt_img, a, b)
     
     
 def brigthness(img, alpha = 9., beta = .09):
 
-    return cv2.convertScaleAbs(img, alpha = alpha, beta = beta)
+    return cv2.convertScaleAbs(
+        img, alpha = alpha, beta = beta)
     
 def rotated(image, fname):
     
@@ -72,7 +75,8 @@ def linearization(
         ):
     
     
-    original = io.imread(fname, as_gray = True)
+    original = io.imread(
+        fname, as_gray = True)
     
     _, size_x, size_y = mapping.shape
     
@@ -95,28 +99,16 @@ fname = 'imager/img/O6_CA_20160211_232747.tif'
 image = processing_img(fname)
 
 
-def remove_stars(
-        image, 
-        starsize = 15, 
-        threshold = 50
-        ):
-    
-    a_filtered = median_filter(
-        image, size = starsize)
-
-    a_final = np.where(
-        (image - a_filtered) > threshold, 
-        a_filtered, image)
-
-    return a_final
 
 
-img = remove_stars(
+
+img = im.remove_stars(
     image, 
     starsize = 15, 
     threshold = 50
     )
-size = 10
+
+size = 8
 f = im.visualization(
     img, 
     fname, 

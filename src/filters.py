@@ -2,6 +2,22 @@ import numpy as np
 from skimage import io
 from constants import constants as c
 import imager as im
+from scipy.ndimage import median_filter
+
+def remove_stars(
+        image, 
+        starsize = 15, 
+        threshold = 50
+        ):
+    
+    a_filtered = median_filter(
+        image, size = starsize)
+
+    a_final = np.where(
+        (image - a_filtered) > threshold, 
+        a_filtered, image)
+
+    return a_final
 
 def vanRhijn_atmExtinction(
         img, fname,

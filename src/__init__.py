@@ -5,3 +5,7 @@ from .mapping import lens_function, get_attributes
 from .calibrate import get_calibration
 from .image_utils import *
 from .constants import *
+from .filters import remove_stars
+from base import config_labels
+
+config_labels()
