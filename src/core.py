@@ -2,6 +2,7 @@ import numpy as np
 from skimage import io
 import imager as im
 import cv2
+from scipy.ndimage import median_filter
 
 
 def int45(A):
@@ -27,12 +28,10 @@ def brigthness(img, alpha = 9., beta = .09):
         img, alpha = alpha, beta = beta)
     
 def rotated(image, fname):
-    
-    
-    time = im.imager_fname(fname).datetime
-    
-    dat = im.get_calibration(time)
+        
+    dat = im.get_calibration(fname)
     angle = float(dat["Rotation"])
+    
 
     if dat["Horizontal Flip"] == "ON":
         image = cv2.flip(image, 1)
@@ -50,13 +49,14 @@ def processing_img(
         fname, 
         size = 10,
         hori_flip = True, 
-        vert_flip = False):
+        vert_flip = True 
+        ):
         
     img2 = rotated(
         io.imread(fname, as_gray = True), fname
         )
     
-    a, b = tuple(im.getlevel(img2, [0.3, 0.94]))
+    a, b = tuple(im.getlevel(img2, [0.3, 0.94])) #[0.04, 0.9]
   
     new_img = im.bytscl(img2, b, a)
     
@@ -93,28 +93,44 @@ def linearization(
     return new_img
 
 
-# ---------------------------------
 
+
+def remove_stars(
+        image, 
+        starsize = 5, 
+        threshold = 50
+        ):
+    
+    a_filtered = median_filter(
+        image, size = starsize)
+
+    a_final = np.where(
+        (image - a_filtered) > threshold, 
+        a_filtered, image)
+
+    return a_final
+
+
+# def main():
+    
 fname = 'imager/img/O6_CA_20160211_232747.tif'
-image = processing_img(fname)
-
-
-
-
-
-img = im.remove_stars(
-    image, 
-    starsize = 15, 
-    threshold = 50
-    )
-
-size = 8
-f = im.visualization(
-    img, 
+# fname = 'imager/img/O6_CP_20160213_075128.tif'
+image = processing_img(
     fname, 
-    width = size, 
-    height = size
+    hori_flip = True,
+    vert_flip = False
     )
+
+image = remove_stars(image)
+start_out = ''
+
+size = 10
+f = im.visualization(
+            image, 
+            fname, 
+            width = size, 
+            height = size
+            )
 
 
 

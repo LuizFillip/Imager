@@ -1,7 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import datetime as dt
+from base import config_labels
 
+config_labels()
 
 class imager_fname(object):
     
@@ -99,7 +101,7 @@ def visualization(
     draw_labels(
         ax, 
         infile, 
-        fontsize = 20, 
+        fontsize = 25, 
         color = "white"
         )
 

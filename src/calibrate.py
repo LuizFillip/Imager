@@ -2,9 +2,7 @@ import datetime as dt
 import os
 import json 
 import pandas as pd
-import sys
-os.path.dirname(sys.executable)
-from pathlib import Path
+import imager as im 
 
 def remove_values(list_to_remove: list, 
                   item_to_remove:str = "") -> list:
@@ -75,6 +73,7 @@ def run_for_all_files(
     and append to one single dictionary"""
     infile = os.path.join(
         os.getcwd(), 
+        'imager',
         "calibrate", 
         site
         )
@@ -93,27 +92,23 @@ def run_for_all_files(
     return out_dict
 
 
-def get_calibration(
-        time: dt.datetime, 
-        site: str = "CA"
-        ) -> dict:
+def get_calibration(fname) -> dict:
     """Open json file for the last calibration for the time"""
-    try:
-        infile = os.path.join(os.getcwd(), 
-                              "calibrate", 
-                              site,
-                              f"{site}.json")
-        
-        dat = json.load(open(infile))
-    except:
-        infile = os.path.join(os.getcwd(), 
-                              "imager",
-                              "calibrate", 
-                              site,
-                              f"{site}.json")
-        
-        dat = json.load(open(infile))
 
+    
+       
+        
+    args = im.imager_fname(fname) 
+    time = args.datetime
+    site = args.site
+    
+    infile = os.path.join(os.getcwd(), 
+                          "imager",
+                          "calibrate", 
+                          site,
+                          f"{site}.json")
+    
+    dat = json.load(open(infile))
     ts = pd.to_datetime(list(dat.keys()))
 
     for num in range(len(ts) - 1):
@@ -127,17 +122,4 @@ def get_calibration(
         elif (time > max(ts)):
             return dat[str(max(ts).date())]
 
-def main():
-    site = "CA"
-    df = run_for_all_files(site)
-   
-site = 'CA'   
-infile = os.path.join(os.getcwd(), 
-                      "imager",
-                      "calibrate", 
-                      site,
-                      f"{site}.json")
-
-dat = json.load(open(infile))
-
-dat
+# def main():
