@@ -1,7 +1,9 @@
-
+import imager as im
+import base as b 
+import os 
 
 def process_visualize(path_in, size = 10):
-    image = processing_img(
+    image = im.processing_img(
         path_in, 
         hori_flip = False,
         vert_flip = True
@@ -9,7 +11,7 @@ def process_visualize(path_in, size = 10):
     
     
     return im.visualization(
-                remove_stars(image), 
+                im.remove_stars(image), 
                 path_in, 
                 width = size, 
                 height = size
@@ -17,7 +19,6 @@ def process_visualize(path_in, size = 10):
 
 
 infile = 'D:\\img\\'
-import base as b 
 
 for folder in os.listdir(infile)[:-1]:
     
