@@ -56,7 +56,7 @@ def processing_img(
         io.imread(fname, as_gray = True), fname
         )
     
-    a, b = tuple(im.getlevel(img2, [0.3, 0.94])) #[0.04, 0.9]
+    a, b = tuple(im.getlevel(img2, [0.2, 0.94])) # [0.3, 0.94]
   
     new_img = im.bytscl(img2, b, a)
     
@@ -111,26 +111,24 @@ def remove_stars(
     return a_final
 
 
-# def main():
+
+import os
+import matplotlib.pyplot as plt
+
+def save_img(fig, 
+             save_in):
     
-fname = 'imager/img/O6_CA_20160211_232747.tif'
-# fname = 'imager/img/O6_CP_20160213_075128.tif'
-image = processing_img(
-    fname, 
-    hori_flip = True,
-    vert_flip = False
-    )
-
-image = remove_stars(image)
-start_out = ''
-
-size = 10
-f = im.visualization(
-            image, 
-            fname, 
-            width = size, 
-            height = size
-            )
+    plt.ioff()
+    
+    
+    fig.savefig(save_in, 
+                dpi = 100, 
+                pad_inches = 0, 
+                bbox_inches = "tight", 
+                transparent = False)
+    plt.clf()   
+    plt.close()
+    return 
 
 
 
