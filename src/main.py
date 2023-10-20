@@ -20,3 +20,9 @@ def process_all_images(files):
           
 
 #process_all_images(files)
+
+infile = 'D:\\img\\CA_2013_0104\\'
+
+files = os.listdir(infile)
+
+process_all_images(files)
