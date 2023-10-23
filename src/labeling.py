@@ -1,9 +1,19 @@
 import os
 import matplotlib.pyplot as plt
 import datetime as dt
-from base import config_labels
+from skimage import io
+import base as b 
 
-config_labels()
+b.config_labels()
+
+
+def fn2datetime(filename):
+
+    infos = filename[:-4].split("_") 
+    date_time = infos[2] + " " + infos[-1]
+    form = '%Y%m%d %H%M%S'
+    return dt.datetime.strptime(date_time, form)
+      
 
 class imager_fname(object):
     
@@ -30,37 +40,55 @@ class imager_fname(object):
     def str_date(self):
         return self.datetime.strftime("%d/%m/%Y")
 
-def draw_labels(ax, 
-                infile, 
-                fontsize = 20, 
-                color = "black"):
+def draw_labels(
+        ax, 
+        infile, 
+        fontsize = 20, 
+        color = "black"
+        ):
     
     filename = os.path.split(infile)[-1]
     
     d = imager_fname(filename)
     
-    ax.text(0, 510, d.str_time, 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize)
+    upper = 22
     
-    ax.text(390, 510, d.str_date, 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize)
+    ax.text(
+        0, 510, d.str_time, 
+        transform = ax.transData, 
+        color = color, fontsize = fontsize
+        )
     
-    ax.text(0, 15, d.site, 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize)
+    ax.text(
+        395, 510, d.str_date, 
+        transform = ax.transData, 
+        color = color, fontsize = fontsize
+        )
     
-    ax.text(480, 15, d.emission, 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize)
+    ax.text(
+        0, upper, d.site, 
+        transform = ax.transData, 
+        color = color, fontsize = fontsize
+        )
     
-    ax.text(256, 15, "N", 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize + 10)
-    ax.text(490, 256, "E", 
-            transform = ax.transData, 
-            color = color, fontsize = fontsize + 10)
+    ax.text(
+        480, upper, d.emission, 
+        transform = ax.transData, 
+        color = color, fontsize = fontsize
+        )
+    
+    ax.text(
+        256, upper, "N", 
+        transform = ax.transData, 
+        color = color, 
+        fontsize = fontsize + 10
+        )
+    
+    ax.text(
+        490, 256, "E", 
+        transform = ax.transData, 
+        color = color, 
+        fontsize = fontsize + 10)
     
    
 def save_img(fig, 
@@ -69,18 +97,20 @@ def save_img(fig,
     plt.ioff()
     
     
-    fig.savefig(save_in, 
-                dpi = 100, 
-                pad_inches = 0, 
-                bbox_inches = "tight", 
-                transparent = False)
+    fig.savefig(
+        save_in, 
+        dpi = 300, 
+        pad_inches = 0, 
+        bbox_inches = "tight", 
+        transparent = False
+        )
     plt.clf()   
     plt.close()
     return 
 
 def visualization(
-        image, 
         infile,
+        image  = None,
         width = 12, 
         height = 12
         ):
@@ -93,6 +123,9 @@ def visualization(
         dpi = 300
         )
     ax = fig.add_subplot()
+    
+    if image is None:
+        image = io.imread(infile, as_gray = True)
     
     ax.imshow(image, cmap = "gray")
     
@@ -110,7 +143,8 @@ def visualization(
     return fig
    
 def main():     
-    infile =  "database/examples/OH_CA_20181112_002024.tif" 
+    infile =  "imager/img/O6_CA_20160211_232747.tif" 
             
-    image, fig = visualization(infile)
-        
+    fig = visualization(infile)
+    
+main()
