@@ -1,6 +1,5 @@
 import numpy as np
 from skimage import io
-from constants import constants as c
 import imager as im
 
 
@@ -11,7 +10,7 @@ def vanRhijn_atmExtinction(
     
     xsize, ysize = img.shape
 
-    Re = c.equator_radius
+    Re = im.constants.equator_radius
 
     attrs = im.get_attributes(fname)
     xm = attrs.xm
@@ -28,7 +27,7 @@ def vanRhijn_atmExtinction(
     ang = np.zeros((xsize, ysize))
     ang2 = np.zeros((xsize, ysize))
     
-    height = c.emission_band()
+    height = im.constants.emission_band()
     
     for i in range(0, xsize):
         for j in range(0, ysize):
@@ -44,11 +43,14 @@ def vanRhijn_atmExtinction(
             ang[i, j] = angulo
             
             
-            vr[i, j] = pow(1 - (Re / (Re + height)**2) *
-                        (np.sin(np.radians(angulo)))**2, -0.5)
+            vr[i, j] = pow(
+                1 - (Re / (Re + height)**2) *
+                (np.sin(np.radians(angulo)))**2, -0.5
+                )
            
-            Ftheta =  pow(np.cos(np.radians(angulo)) + 
-                         (0.15 * (93.885 - angulo)**(-1.253)), -1)
+            Ftheta =  pow(
+                np.cos(np.radians(angulo)) + 
+                (0.15 * (93.885 - angulo)**(-1.253)), -1)
            
             ae[i, j] = 10**(-0.4 * a * Ftheta)
             

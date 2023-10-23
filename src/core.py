@@ -10,7 +10,6 @@ def int45(A):
     C = B + 0.5
     return (A / abs(A)).astype(int)*C.astype(int)
 
-        
 
 def get_level(
         filt_img, 
@@ -56,7 +55,7 @@ def processing_img(
         io.imread(fname, as_gray = True), fname
         )
     
-    a, b = tuple(im.getlevel(img2, [0.2, 0.94])) # [0.3, 0.94]
+    a, b = tuple(im.getlevel(img2, [0.2, 0.94]))
   
     new_img = im.bytscl(img2, b, a)
     
@@ -112,23 +111,6 @@ def remove_stars(
 
 
 
-import os
-import matplotlib.pyplot as plt
-
-def save_img(fig, 
-             save_in):
-    
-    plt.ioff()
-    
-    
-    fig.savefig(save_in, 
-                dpi = 100, 
-                pad_inches = 0, 
-                bbox_inches = "tight", 
-                transparent = False)
-    plt.clf()   
-    plt.close()
-    return 
 
 
 

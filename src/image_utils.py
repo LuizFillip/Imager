@@ -49,8 +49,7 @@ def get_files(infile: T.TextIO, extension = ".tif"):
 def date_from_doy(year: int, doy:int) -> dt.datetime:
     """Return date from year and doy"""
     return pd.Timestamp(
-        dt.date(year, 1, 1) +
-        dt.timedelta(doy - 1))
+        dt.date(year, 1, 1) +  dt.timedelta(doy - 1))
 
 
 

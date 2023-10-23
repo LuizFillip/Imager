@@ -1,44 +1,13 @@
 import os
 import matplotlib.pyplot as plt
-import datetime as dt
+import imager as im
 from skimage import io
 import base as b 
 
 b.config_labels()
 
 
-def fn2datetime(filename):
 
-    infos = filename[:-4].split("_") 
-    date_time = infos[2] + " " + infos[-1]
-    form = '%Y%m%d %H%M%S'
-    return dt.datetime.strptime(date_time, form)
-      
-
-class imager_fname(object):
-    
-    """Get datetime from filename (EMBRACE format)"""
-    
-    def __init__(self, filename):
-        
-        filename = os.path.split(filename)[-1]
-  
-        infos = filename[:-4].split("_")
-        date = infos[2]
-        time = infos[-1]
-        self.emission = infos[0]
-        self.site = infos[1]
-        self.datetime = dt.datetime.strptime(
-            date + " " + time, 
-            '%Y%m%d %H%M%S')
-  
-    @property
-    def str_time(self):
-        return self.datetime.strftime("%H:%M:%S UT")
-    
-    @property
-    def str_date(self):
-        return self.datetime.strftime("%d/%m/%Y")
 
 def draw_labels(
         ax, 
@@ -49,7 +18,7 @@ def draw_labels(
     
     filename = os.path.split(infile)[-1]
     
-    d = imager_fname(filename)
+    d = im.imager_fname(filename)
     
     upper = 22
     
@@ -110,7 +79,7 @@ def save_img(fig,
 
 def visualization(
         infile,
-        image  = None,
+        image,
         width = 12, 
         height = 12
         ):
@@ -124,8 +93,8 @@ def visualization(
         )
     ax = fig.add_subplot()
     
-    if image is None:
-        image = io.imread(infile, as_gray = True)
+    # if image is not None:
+    #     image = io.imread(infile, as_gray = True)
     
     ax.imshow(image, cmap = "gray")
     
@@ -138,13 +107,13 @@ def visualization(
         color = "white"
         )
 
-    plt.show()
+    # plt.show()
     
     return fig
    
 def main():     
-    infile =  "imager/img/O6_CA_20160211_232747.tif" 
+    infile = "imager/img/O6_CA_20160211_232747.tif" 
             
     fig = visualization(infile)
     
-main()
+# main()
