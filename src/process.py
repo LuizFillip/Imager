@@ -98,3 +98,8 @@ def process_folder_to_folder(
             
     plt.clf()   
     plt.close()
+    
+process_folder_to_folder(
+        PATH_IN, 
+        PATH_OUT
+        )
