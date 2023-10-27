@@ -52,14 +52,21 @@ def date_from_doy(year: int, doy:int) -> dt.datetime:
         dt.date(year, 1, 1) +  dt.timedelta(doy - 1))
 
 
+def folder_from_date(dn, site = 'CA'):
+    return dn.strftime(f'{site}_%Y_%m%d')
+
 
 def filename_from_date(
-        t: dt.datetime, 
+        dn: dt.datetime, 
         layer:str = "O6", 
         site:str = "CA"
         ) -> str:
-    """Create EMBRACE filename format from site, layer and datetime"""
-    return f'{layer}_{site}_{t.strftime("%Y%m%d_%H%M%S")}'
+    
+    """
+    Create EMBRACE filename format from site,
+    layer and datetime
+    """
+    return dn.strftime(f'{layer}_{site}_%Y%m%d_%H%M%S')
 
 
 def convert_tif_to_png(filename, path = None):
@@ -76,3 +83,6 @@ def convert_tif_to_png(filename, path = None):
     except RuntimeError:
         print("All files was converted")
  
+    
+# dn = dt.datetime(2013, 1, 14, 20)
+# folder_from_date(dn, site = 'CA')
