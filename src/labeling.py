@@ -93,9 +93,6 @@ def visualization(
         )
     ax = fig.add_subplot()
     
-    # if image is not None:
-    #     image = io.imread(infile, as_gray = True)
-    
     ax.imshow(image, cmap = "gray")
     
     ax.set_axis_off()
@@ -106,14 +103,12 @@ def visualization(
         fontsize = 25, 
         color = "white"
         )
-
-    # plt.show()
     
     return fig
    
 def main():     
     infile = "imager/img/O6_CA_20160211_232747.tif" 
             
-    fig = visualization(infile)
+    visualization(infile)
     
 # main()
