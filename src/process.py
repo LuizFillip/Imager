@@ -99,7 +99,13 @@ def process_folder_to_folder(
     plt.clf()   
     plt.close()
     
-process_folder_to_folder(
-        PATH_IN, 
-        PATH_OUT
-        )
+# process_folder_to_folder(
+#         PATH_IN, 
+#         PATH_OUT
+#         )
+
+path_folder = 'D:\\img\\RAW\\CA_2013_0610\\'
+folder_out = 'D:\\img\\PRO\\CA_2013_0610\\'
+process_img_to_img(
+    path_folder, folder_out
+    )
