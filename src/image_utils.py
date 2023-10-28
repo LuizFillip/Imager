@@ -49,10 +49,10 @@ def get_files(infile: T.TextIO, extension = ".tif"):
 def date_from_doy(year: int, doy:int) -> dt.datetime:
     """Return date from year and doy"""
     return pd.Timestamp(
-        dt.date(year, 1, 1) +  dt.timedelta(doy - 1))
+        dt.date(year, 1, 1) + dt.timedelta(doy - 1))
 
 
-def folder_from_date(dn, site = 'CA'):
+def folder_from_dn(dn, site = 'CA'):
     return dn.strftime(f'{site}_%Y_%m%d')
 
 
