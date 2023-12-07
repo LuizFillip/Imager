@@ -1,5 +1,5 @@
 
-# All-Sky Imager Image Processing
+# All-Sky Images Processing
 
 This repository contains scripts and tools for processing images obtained from an all-sky imager. The processing pipeline includes various filters such as contrast and brightness adjustments, image linearization, and coordinate adjustments.
 
