@@ -46,9 +46,18 @@ def draw_labels(
         )
     
     
+def str_time(dn):
+    return dn.strftime("%H:%M:%S UT")
+
+def str_date(dn):
+    return dn.strftime("%d/%m/%Y")
+
+def str_datetime(dn):
+    return dn.strftime("%d/%m/%Y %H:%M:%S UT")
+    
     
 def display_image(ax_img, img, title = ''):
-
+    
     ax_img.imshow(img, cmap='gray')
     ax_img.set_axis_off()
     ax_img.set(title = title)

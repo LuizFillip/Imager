@@ -2,14 +2,14 @@ import datetime as dt
 import os
 import json 
 import pandas as pd
-import imager as im 
+
 
 def remove_values(list_to_remove: list, 
                   item_to_remove: str = "") -> list:
     """Remove value in list"""
     return [item.strip() for item in list_to_remove if item != ""]
 
-def get_date_from_folder(folder: str) -> dt.date:
+def date_from_folder(folder: str) -> dt.date:
     """split filename arguments and get calibration date"""
     args = folder.split(".")
     year = int(args[0])
@@ -65,8 +65,7 @@ class load(object):
 
 
 def run_for_all_files(
-        site: str = "CA", 
-        save: bool = True
+        site: str = "CA"
         ) -> dict:
     
     """Get path with all times calibration 
@@ -82,23 +81,31 @@ def run_for_all_files(
     
     for folder in os.listdir(infile):
         dat = load(infile, folder)
-        date = get_date_from_folder(folder)
+        date = date_from_folder(folder)
         out_dict.update({str(date): dat.result})
         
-    if save:
-        with open(os.path.join(infile, f"{site}.json"), 'w') as f:
-            json.dump(out_dict, f)
+
+    with open(os.path.join(infile, f"{site}.json"), 'w') as f:
+        json.dump(out_dict, f)
 
     return out_dict
 
 
-def get_calibration(fname) -> dict:
-    """Open json file for the last calibration for the time"""
 
-    args = im.imager_fname(fname) 
-    time = args.datetime
-    site = args.site
+def attributes_img(path):
     
+    filename = os.path.split(path)[-1]
+    
+    infos = filename[:-4].split("_")
+    
+    datetime = dt.datetime.strptime(
+        infos[2] + " " + infos[-1], 
+        '%Y%m%d %H%M%S')
+    
+    return {'dn': datetime, 'site': infos[1], 'layer': infos[0]}
+  
+def load_dat(site):
+
     infile = os.path.join(
             os.getcwd(), 
             "imager",
@@ -107,18 +114,34 @@ def get_calibration(fname) -> dict:
             f"{site}.json"
             )
   
-    dat = json.load(open(infile))
-    ts = pd.to_datetime(list(dat.keys()))
+    return json.load(open(infile))
+
+
+def get_calibration(file) -> dict:
+    """
+    Open json file for the last 
+    calibration for the time
+    """
+    
+    attrs = attributes_img(file)
+    site = attrs['site']
+    dn = attrs['dn']
+    
+    df = load_dat(site)
+
+    ts = pd.to_datetime(list(df.keys()))
 
     for num in range(len(ts) - 1):
         
-        dt1 = pd.Timestamp(ts[num])
-        dt2 = pd.Timestamp(ts[num + 1])
+        start = ts[num]
+        ending = pd.Timestamp(ts[num + 1])
         
-        if (dt1 > time) and (dt2 < time):
-            return dat[str(dt2.date())]
+        if (start > dn) and (ending < dn):
+            return df[str(ending.date())]
         
-        elif (time > max(ts)):
-            return dat[str(max(ts).date())]
+        elif (dn > max(ts)):
+            return df[str(max(ts).date())]
 
 
+
+# get_calibration(file)

@@ -13,38 +13,6 @@ def fn2datetime(filename):
     return dt.datetime.strptime(date_time, form)
       
 
-class imager_fname(object):
-    
-    """Get datetime from filename (EMBRACE format)"""
-    
-    def __init__(self, filename):
-        
-        filename = os.path.split(filename)[-1]
-  
-        infos = filename[:-4].split("_")
-        date = infos[2]
-        time = infos[-1]
-        self.emission = infos[0]
-        self.site = infos[1]
-        self.datetime = dt.datetime.strptime(
-            date + " " + time, 
-            '%Y%m%d %H%M%S')
-  
-    @property
-    def str_time(self):
-        return self.datetime.strftime("%H:%M:%S UT")
-    
-    @property
-    def str_date(self):
-        return self.datetime.strftime("%d/%m/%Y")
-
-def get_files(infile: T.TextIO, extension = ".tif"): 
-    """
-    get all files in directory like glob
-    """
-    
-    return [f for f in os.listdir(infile) if 
-            f.endswith(extension)]
 
 def date_from_doy(year: int, doy:int) -> dt.datetime:
     """Return date from year and doy"""
