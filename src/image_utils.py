@@ -68,21 +68,3 @@ def filename_from_date(
     """
     return dn.strftime(f'{layer}_{site}_%Y%m%d_%H%M%S')
 
-
-def convert_tif_to_png(filename, path = None):
-    """Convert to PNG"""
-    if path is not None:
-        src = os.path.join(path, filename)
-        dest = os.path.join(path, filename.replace(".tif",'.png') )     
-        
-    else:
-        src = filename
-        dest = filename.replace(".tif",'.png')
-    try:
-        os.rename(src, dest)   
-    except RuntimeError:
-        print("All files was converted")
- 
-    
-# dn = dt.datetime(2013, 1, 14, 20)
-# folder_from_date(dn, site = 'CA')

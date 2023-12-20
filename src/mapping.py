@@ -45,7 +45,8 @@ def projection_area(i: int,
                     j:int, 
                     half_x:int, 
                     half_y:int, attrs, alt_ag):
-    """Compute the projection for each pixel in the image"""
+    """
+    Compute the projection for each pixel in the image"""
     Re = im.constants().equator_radius
     alpha = projection_factor()
     arg = pow(half_x - i, 2) + pow(j - half_y, 2)
@@ -54,12 +55,17 @@ def projection_area(i: int,
 
 
 def elevation_angle(a, attrs, alt_ag):
-    """Elevation angle which an observer see the layer structure"""
+    
+    """
+    Elevation angle which an observer see the
+    layer structure
+    """
     Re = im.constants().equator_radius
     H = attrs.alt_obs
     
     return np.arctan2((Re + alt_ag) * np.sin(a), 
-                      (Re + alt_ag) * np.cos(a) - (Re + H))
+                      (Re + alt_ag) * np.cos(a) - 
+                      (Re + H))
 
 
 def azimuth_angle(i, j, half_x, half_y):

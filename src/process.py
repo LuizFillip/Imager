@@ -23,25 +23,26 @@ def save_img(fig,
 
 def process_visualize(
         path_in, 
-        size = 10
+        size = 10,
+        stars = False
         ):
     
     image = im.processing_img(
         path_in, 
-        hori_flip = False,
-        vert_flip = True
+        hori_flip = True,
+        vert_flip = False
         )
-
+    if stars:
+        img_pro = im.remove_stars(image)
+    else:
+        img_pro = image
+        
     return im.visualization(
                 path_in, 
-                im.remove_stars(image), 
+                img_pro, 
                 width = size, 
                 height = size
-                )
-
-
-PATH_IN = 'D:\\img\\RAW\\'
-PATH_OUT = 'D:\\img\\PRO\\'
+            )
 
 
 
@@ -61,7 +62,7 @@ def process_img_to_img(path_folder, folder_out):
                fname.replace('tif', 'png')
                )
             
-            print('processing', fname)
+            print('[processing image]', fname)
             
             fig = process_visualize(path_in)
             
@@ -104,8 +105,8 @@ def process_folder_to_folder(
 #         PATH_OUT
 #         )
 
-path_folder = 'D:\\img\\RAW\\CA_2013_0610\\'
-folder_out = 'D:\\img\\PRO\\CA_2013_0610\\'
+path_in = 'D:\\img\\CA_2017_0403\\'
+path_out = 'D:\\img\\CA_2017_0403P\\'
 process_img_to_img(
-    path_folder, folder_out
+    path_in, path_out
     )

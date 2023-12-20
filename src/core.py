@@ -5,15 +5,10 @@ import cv2
 from scipy.ndimage import median_filter
 
 
-def int45(A):
-    B = abs(A)
-    C = B + 0.5
-    return (A / abs(A)).astype(int)*C.astype(int)
-
-
 def get_level(
         filt_img, 
         sref_min = 0.0099, sref_max = 0.9): 
+    
     a, b = im.getlevel2(
         filt_img, 
         sref_min, 
@@ -50,7 +45,7 @@ def processing_img(
         hori_flip = True, 
         vert_flip = True 
         ):
-        
+    
     img2 = rotated(
         io.imread(fname, as_gray = True), fname
         )
@@ -111,6 +106,16 @@ def remove_stars(
 
 
 
+def main():
 
-
+    fname = 'imager/img/O6_STR_20230213_015619.tif'
+    img = io.imread(fname, as_gray = True)
+    
+    import matplotlib.pyplot as plt
+    
+    a, b = tuple(im.getlevel(img, [0.2, 0.94]))
+    
+    new_img = im.bytscl(img, b, a)
+    
+    plt.imshow(new_img, cmap = 'gray')
 
