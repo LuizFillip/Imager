@@ -16,3 +16,5 @@ The all-sky imager captures wide-angle images of the sky, which require several 
 - Contrast and Brightness Filters: Apply customizable filters to adjust image contrast and brightness according to specific requirements.
 - Image Linearization Tools: Correct image distortions and nonlinearities caused by the imaging setup.
 - Coordinate Adjustment Utilities: Align images based on celestial coordinates or custom alignment requirements.
+
+![Calibration example](ims/calibration.png)
