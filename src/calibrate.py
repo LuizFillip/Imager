@@ -5,7 +5,7 @@ import pandas as pd
 import imager as im 
 
 def remove_values(list_to_remove: list, 
-                  item_to_remove:str = "") -> list:
+                  item_to_remove: str = "") -> list:
     """Remove value in list"""
     return [item.strip() for item in list_to_remove if item != ""]
 
@@ -95,19 +95,18 @@ def run_for_all_files(
 def get_calibration(fname) -> dict:
     """Open json file for the last calibration for the time"""
 
-    
-       
-        
     args = im.imager_fname(fname) 
     time = args.datetime
     site = args.site
     
-    infile = os.path.join(os.getcwd(), 
-                          "imager",
-                          "calibrate", 
-                          site,
-                          f"{site}.json")
-    
+    infile = os.path.join(
+            os.getcwd(), 
+            "imager",
+            "calibrate", 
+            site,
+            f"{site}.json"
+            )
+  
     dat = json.load(open(infile))
     ts = pd.to_datetime(list(dat.keys()))
 

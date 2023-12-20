@@ -105,8 +105,8 @@ def process_folder_to_folder(
 #         PATH_OUT
 #         )
 
-path_in = 'D:\\img\\CA_2017_0403\\'
-path_out = 'D:\\img\\CA_2017_0403P\\'
-process_img_to_img(
-    path_in, path_out
-    )
+# path_in = 'D:\\img\\CA_2017_0403\\'
+# path_out = 'D:\\img\\CA_2017_0403P\\'
+# process_img_to_img(
+#     path_in, path_out
+#     )

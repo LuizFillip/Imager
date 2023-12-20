@@ -2,20 +2,9 @@ import numpy as np
 from skimage import io
 import imager as im
 import cv2
-from scipy.ndimage import median_filter
 
 
-def get_level(
-        filt_img, 
-        sref_min = 0.0099, sref_max = 0.9): 
-    
-    a, b = im.getlevel2(
-        filt_img, 
-        sref_min, 
-        sref_max)
-    return im.bytscl2(filt_img, a, b)
-    
-    
+
 def brigthness(img, alpha = 9., beta = .09):
 
     return cv2.convertScaleAbs(
@@ -50,7 +39,7 @@ def processing_img(
         io.imread(fname, as_gray = True), fname
         )
     
-    a, b = tuple(im.getlevel(img2, [0.2, 0.94]))
+    a, b = im.getlevel(img2, [0.2, 0.94])
   
     new_img = im.bytscl(img2, b, a)
     
@@ -89,20 +78,6 @@ def linearization(
 
 
 
-def remove_stars(
-        image, 
-        starsize = 5, 
-        threshold = 50
-        ):
-    
-    a_filtered = median_filter(
-        image, size = starsize)
-
-    a_final = np.where(
-        (image - a_filtered) > threshold, 
-        a_filtered, image)
-
-    return a_final
 
 
 

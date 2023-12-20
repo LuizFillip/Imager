@@ -80,7 +80,8 @@ def getlevel2(im2, sref_min, sref_max):
     :param im2: imagem tipo float
     :param sref_min: nivel de referencia normalizado
     :param sref_max: nivel de referencia normalizado
-    :return: limites inferior e superior da imagem para exibição na tela, 
+    :return: limites inferior e superior da imagem 
+    para exibição na tela, 
     baseado nos niveis de referencia.
     '''
     #
@@ -93,9 +94,11 @@ def getlevel2(im2, sref_min, sref_max):
     nbins = np.floor(((x_max - x_min) / bin_size))
 
     try:
-        hist, bins = np.histogram(im2, 
-                                     int(nbins), 
-                                     range = [x_min, x_max])
+        hist, bins = np.histogram(
+            im2, 
+            int(nbins), 
+            range = [x_min, x_max]
+            )
 
         sum_histogram = np.sum(hist)
 
