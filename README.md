@@ -17,4 +17,4 @@ The all-sky imager captures wide-angle images of the sky, which require several 
 - Image Linearization Tools: Correct image distortions and nonlinearities caused by the imaging setup.
 - Coordinate Adjustment Utilities: Align images based on celestial coordinates or custom alignment requirements.
 
-![Calibration example](ims/calibration.png)
+![Calibration example](img/calibration.png)

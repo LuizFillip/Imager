@@ -43,6 +43,6 @@ def display(images, names):
         
     return fig
         
-fig = display(images, names)
+# fig = display(images, names)
 
-fig.savefig('imager/img/calibration')
+# fig.savefig('imager/img/calibration')

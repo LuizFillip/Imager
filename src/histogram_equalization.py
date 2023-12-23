@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from skimage import exposure, io
 import imager as im 
-
+import os 
+import base as b 
 
 def load_image(fname):
     
@@ -27,7 +28,7 @@ def equalization_forms(img):
     p2, p98 = np.percentile(img, (2, 99))
     
     img_rescale = exposure.rescale_intensity(
-        img, in_range=(p2, p98))
+        img, in_range =  (p2, p98))
     
     # Equalization
     img_eq = exposure.equalize_hist(img)
@@ -77,12 +78,11 @@ def figure_base(fname):
     
     return fig
 
-import os 
-import base as b 
+
 
 root = 'database/CA_2016_0211'
 
-def process_and_save():
+def process_and_save(root):
         
     b.make_dir(root + 'P')
     
