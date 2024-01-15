@@ -5,11 +5,7 @@ This repository contains scripts and tools for processing images obtained from a
 
 ## Overview
 
-The all-sky imager captures wide-angle images of the sky, which require several preprocessing steps before analysis or visualization. This repository provides scripts and tools to facilitate the following image processing tasks:
-
-- Contrast and Brightness Adjustment: Enhance the visibility of features by adjusting contrast and brightness parameters.
-- Image Linearization: Correct distortions or non-linearities in the captured images.
-- Coordinate Adjustment: Align images based on celestial coordinates or correct for specific alignments.
+The all-sky imager captures wide-angle images of the sky, which require several preprocessing steps before analysis or visualization. This repository provides scripts and tools to facilitate All-Sky image processing.
 
 ## Features
 
